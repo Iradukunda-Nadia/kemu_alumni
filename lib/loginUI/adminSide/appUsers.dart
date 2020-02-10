@@ -31,7 +31,8 @@ class _appUsersState extends State<appUsers> {
                           ),
                           title: Text(doc.data['name'], style: TextStyle(fontSize: 12),),
                           trailing: RaisedButton(
-                              color: Colors.transparent,
+                              color: Colors.pink[900],
+                              child: Text("Approve"),
                               onPressed: () async{
 
                                 showDialog(
@@ -76,7 +77,7 @@ class _appUsersState extends State<appUsers> {
 
                                       );
                                     },
-                                  child: new Text("Approve",style: TextStyle(color: Colors.pink),),
+
                                 );
                               })
                         ),
