@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1029273347240",
+    "firebase_url": "https://kemu-9af65.firebaseio.com",
+    "project_id": "kemu-9af65",
+    "storage_bucket": "kemu-9af65.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029273347240:android:919c3efbd6f921d6ed0e9d",
+        "android_client_info": {
+          "package_name": "com.nadia.kemu_alumni"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1029273347240-notj4drtjdnaq3eg6uqns7vao8urbfho.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgAXlgDhCD-B5wLLUHUi21zFlPGemB1es"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1029273347240-notj4drtjdnaq3eg6uqns7vao8urbfho.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
