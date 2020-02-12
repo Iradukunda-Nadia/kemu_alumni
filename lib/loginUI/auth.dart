@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 abstract class BaseAuth {
   Future<String> signIn(String email, String password);
@@ -18,6 +19,7 @@ abstract class BaseAuth {
 
 class Auth implements BaseAuth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseMessaging _messaging = FirebaseMessaging();
 
   Future<String> signIn(String email, String password) async {
     AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
@@ -30,12 +32,17 @@ class Auth implements BaseAuth {
     AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
     FirebaseUser user = result.user;
+    _messaging.getToken().then((token) {
+      print(token);
+    });
+    String fcmToken = await _messaging.getToken();
     Firestore.instance
         .collection("users")
         .document(user.uid)
         .setData({
       "name": user.email,
       "id": user.uid,
+      "token": fcmToken,
       "status": "pending",
     });
     return user.uid;

@@ -50,6 +50,11 @@ class _appUsersState extends State<appUsers> {
                                                     .updateData({
                                                   'status': "approved",
                                                 });
+                                                Firestore.instance.collection('notifications').document(doc.data['token']).setData({
+                                                'title': "Approved!!",
+                                                'body': "Your regestration has been approved",
+                                                'token': doc.data['token'],
+                                                });
                                                 showDialog(
                                                     context: context,
                                                     builder: (BuildContext context) {

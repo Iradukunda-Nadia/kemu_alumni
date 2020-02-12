@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
@@ -156,11 +157,12 @@ class _ChatState extends State<Chat> {
     _sendMessage(messageText: text, imageUrl: null);
   }
 
-  void _sendMessage({String messageText, String imageUrl}) {
+  Future<void> _sendMessage({String messageText, String imageUrl}) async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
     reference.add({
       'text': messageText,
       'imageUrl': imageUrl,
-      'senderName': name,
+      'senderName': user.email,
       'senderPhotoUrl': avatar,
       'time': DateTime.now(),
     });
@@ -240,7 +242,7 @@ class ChatMessageListItem extends StatelessWidget {
               margin: const EdgeInsets.only(right: 8.0),
               child: new CircleAvatar(
                 child: new Text("${messageSnapshot.data['senderName']
-                    .substring(0,2)}",
+                    .substring(0,1)}",
                   style: new TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 18.0,
