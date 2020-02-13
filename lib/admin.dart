@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/loginUI/adminSide/appUsers.dart';
+import 'package:kemu_alumni/loginUI/adminSide/userSections.dart';
 import 'package:kemu_alumni/loginUI/background.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,7 +67,7 @@ class _DashboardState extends State<Dashboard> {
               children: <Widget>[
                 GestureDetector(
                   onTap: (){
-                    Navigator.of(context).push(FadeRouteBuilder(page: new appUsers()));
+                    Navigator.of(context).push(FadeRouteBuilder(page: new userSections()));
                   },
                   child: Card(
                     clipBehavior: Clip.antiAlias,
@@ -76,7 +77,7 @@ class _DashboardState extends State<Dashboard> {
                       children: <Widget>[
                         AspectRatio(
                             aspectRatio: 18.0 / 11.0,
-                            child: Icon(Icons.group, size: 50.0, color: Colors.deepPurple[900],)
+                            child: Icon(Icons.group, size: 50.0, color: Colors.pink[900],)
                         ),
                         Padding(
                           padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
@@ -84,7 +85,7 @@ class _DashboardState extends State<Dashboard> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text('Pending Users', style: TextStyle(color: Colors.deepPurple[900], fontWeight: FontWeight.bold),),
+                                Text('Users', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
                               ],
                             ),
@@ -107,7 +108,7 @@ class _DashboardState extends State<Dashboard> {
                       children: <Widget>[
                         AspectRatio(
                             aspectRatio: 18.0 / 11.0,
-                            child: Icon(Icons.assignment, size: 50.0, color: Colors.deepPurple[900],)
+                            child: Icon(Icons.assignment, size: 50.0, color: Colors.pink[900],)
                         ),
                         Padding(
                           padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
@@ -115,7 +116,7 @@ class _DashboardState extends State<Dashboard> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text('Events', style: TextStyle(color: Colors.deepPurple[900], fontWeight: FontWeight.bold),),
+                                Text('Events', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
                               ],
                             ),
@@ -138,7 +139,7 @@ class _DashboardState extends State<Dashboard> {
                       children: <Widget>[
                         AspectRatio(
                             aspectRatio: 18.0 / 11.0,
-                            child: Icon(Icons.group_add, size: 50.0, color: Colors.deepPurple[900],)
+                            child: Icon(Icons.group_add, size: 50.0, color: Colors.pink[900],)
                         ),
                         Padding(
                           padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
@@ -146,7 +147,7 @@ class _DashboardState extends State<Dashboard> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text('Elections', style: TextStyle(color: Colors.deepPurple[900], fontWeight: FontWeight.bold),),
+                                Text('Elections', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
                               ],
                             ),
@@ -169,7 +170,7 @@ class _DashboardState extends State<Dashboard> {
                       children: <Widget>[
                         AspectRatio(
                             aspectRatio: 18.0 / 11.0,
-                            child: Icon(Icons.mail, size: 50.0, color: Colors.deepPurple[900],)
+                            child: Icon(Icons.mail, size: 50.0, color: Colors.pink[900],)
                         ),
                         Padding(
                           padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
@@ -177,7 +178,7 @@ class _DashboardState extends State<Dashboard> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text('Chat', style: TextStyle(color: Colors.deepPurple[900], fontWeight: FontWeight.bold),),
+                                Text('Chat', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
                               ],
                             ),

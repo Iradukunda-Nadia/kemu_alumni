@@ -12,9 +12,10 @@ class _appUsersState extends State<appUsers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("App users")),
+      appBar: AppBar(title: Text("App users"),
+      backgroundColor: Colors.pink[900],),
       body: ListView(
-        padding: EdgeInsets.all(12.0),
+        padding: EdgeInsets.all(5.0),
         children: <Widget>[
           SizedBox(height: 20.0),
           StreamBuilder<QuerySnapshot>(
@@ -55,6 +56,7 @@ class _appUsersState extends State<appUsers> {
                                                 'body': "Your regestration has been approved",
                                                 'token': doc.data['token'],
                                                 });
+                                                Navigator.of(context).pop();
                                                 showDialog(
                                                     context: context,
                                                     builder: (BuildContext context) {
