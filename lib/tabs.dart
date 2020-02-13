@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:kemu_alumni/chat.dart';
 import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
 import 'loginUI/home.dart';
 

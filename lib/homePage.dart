@@ -7,7 +7,6 @@ import 'package:kemu_alumni/loginUI/auth.dart';
 import 'package:kemu_alumni/loginUI/home.dart';
 import 'package:kemu_alumni/loginUI/pending.dart';
 import 'package:kemu_alumni/tabs.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 
 enum AuthStatus {

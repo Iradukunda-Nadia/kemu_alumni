@@ -14,7 +14,6 @@ class _userSectionsState extends State<userSections> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("App Users"),),
       body: new ListView(
 
         children: <Widget>[
@@ -26,21 +25,19 @@ class _userSectionsState extends State<userSections> {
                 children: <Widget>[
                   new Container(
                       margin: new EdgeInsets.only(top: 20.0, bottom: 0.0),
-                      height: 100.0,
+                      height: 70.0,
                       width: 100.0,
-                      child: new Hero(
-                        tag: 'hero',
-                      )),
+                      ),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Text(
-                      "See Registered Users",
+                      "App Users",
                       softWrap: true,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
                         decoration: TextDecoration.none,
-                        fontSize: 20.0,
+                        fontSize: 36.0,
                         fontWeight: FontWeight.w300,
                         fontFamily: "OpenSans",
                       ),

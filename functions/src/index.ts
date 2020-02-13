@@ -24,3 +24,31 @@ export const sendToDevice = functions.firestore
 
     return fcm.sendToDevice(tokens, payload);
   });
+
+export const newMessage = functions.firestore
+  .document('messages/{Item}')
+  .onCreate(async snapshot => {
+
+    const message: admin.messaging.MessagingPayload = {
+      notification: {
+        title: 'New Message!',
+        body: `A new message has been sent in E-lorry chat group`,
+      }
+    };
+
+    return fcm.sendToTopic('student', message);
+  });
+
+  export const newEvent = functions.firestore
+    .document('events/{Item}')
+    .onCreate(async snapshot => {
+
+      const message: admin.messaging.MessagingPayload = {
+        notification: {
+          title: 'New Message!',
+          body: `A new message has been sent in E-lorry chat group`,
+        }
+      };
+
+      return fcm.sendToTopic('student', message);
+    });

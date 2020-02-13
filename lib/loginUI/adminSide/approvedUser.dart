@@ -12,7 +12,8 @@ class _approvedUserState extends State<approvedUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("App users")),
+      appBar: AppBar(title: Text("Approved users"),
+      backgroundColor: Colors.pink[900],),
       body: ListView(
         padding: EdgeInsets.all(12.0),
         children: <Widget>[

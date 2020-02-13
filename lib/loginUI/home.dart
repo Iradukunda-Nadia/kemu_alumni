@@ -1,6 +1,8 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/homeUI.dart';
+import 'package:kemu_alumni/newEvent.dart';
 
 
 
@@ -10,6 +12,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final FirebaseMessaging _messaging = FirebaseMessaging();
+  @override
+  void initState() {
+    _messaging.subscribeToTopic('student');
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +43,7 @@ class _HomeState extends State<Home> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new Events()));
+                        Navigator.of(context).push(FadeRouteBuilder(page: newEvents()));
                       },
                       child: Card(
                         clipBehavior: Clip.antiAlias,

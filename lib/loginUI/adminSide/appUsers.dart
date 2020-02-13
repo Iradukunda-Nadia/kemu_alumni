@@ -12,7 +12,7 @@ class _appUsersState extends State<appUsers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("App users"),
+      appBar: AppBar(title: Text("Pending users"),
       backgroundColor: Colors.pink[900],),
       body: ListView(
         padding: EdgeInsets.all(5.0),

@@ -7,7 +7,6 @@ import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
 import 'package:kemu_alumni/loginUI/background.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginSignupPage extends StatefulWidget {
   LoginSignupPage({this.auth, this.loginCallback});
@@ -399,11 +398,7 @@ class _StaffState extends State<Staff> {
         querySnapshot.documents.forEach((document)
         async {
 
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('user', document['name']);
-          prefs.setString('dept', document['dept']);
-          prefs.setString('ID', document.documentID);
-          prefs.setString('pass', document['pw']);
+
           setState(() {
             id = document['dept'];
             isLoggedIn = true;
@@ -431,15 +426,6 @@ class _StaffState extends State<Staff> {
     });
   }
 
-
-  Future<Null> logout() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', null);
-
-    setState(() {
-      isLoggedIn = false;
-    });
-  }
 
 
   @override
@@ -547,7 +533,7 @@ class _StaffState extends State<Staff> {
                         elevation: 16.0,
                         minWidth: 400,
                         height: 50,
-                        textColor: Colors.deepPurple[900],
+                        textColor: Colors.pink[900],
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)
                         ),
