@@ -415,6 +415,7 @@ class _StaffState extends State<Staff> {
           }
 
           if(id == "admin") {
+            _messaging.subscribeToTopic('manager');
             Navigator.of(context).push(new CupertinoPageRoute(
                 builder: (BuildContext context) => new Dashboard()
             ));
@@ -426,7 +427,7 @@ class _StaffState extends State<Staff> {
     });
   }
 
-
+  final FirebaseMessaging _messaging = FirebaseMessaging();
 
   @override
   Widget build(BuildContext context) {
