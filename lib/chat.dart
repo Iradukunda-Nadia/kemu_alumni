@@ -25,17 +25,7 @@ class _ChatState extends State<Chat> {
 
   @override
   initState() {
-    getStringValue();
     super.initState();
-  }
-
-  getStringValue() async {
-    widget.auth.getCurrentUser().then((user) {
-      setState(() {
-        name = user.email.toString();
-      });
-    });
-
   }
 
   final TextEditingController _textEditingController =
@@ -49,6 +39,7 @@ class _ChatState extends State<Chat> {
     return new Scaffold(
         appBar: new AppBar(
           title: new Text("Chat"),
+          backgroundColor: Colors.pink[900],
           elevation:
           Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
         ),

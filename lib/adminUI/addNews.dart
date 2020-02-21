@@ -1,25 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-class EventsList extends StatefulWidget {
+class NewsList extends StatefulWidget {
   @override
-  _EventsListState createState() => _EventsListState();
+  _NewsListState createState() => _NewsListState();
 }
 
-class _EventsListState extends State<EventsList> {
+class _NewsListState extends State<NewsList> {
   final db = Firestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Events"),
+      appBar: AppBar(title: Text("News"),
         backgroundColor: Colors.pink[900],),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        label: new Text('Add new article'),
         //Widget to display inside Floating Action Button, can be `Text`, `Icon` or any widget.
         onPressed: () {
           Navigator.of(context).push(new CupertinoPageRoute(
-              builder: (BuildContext context) => new addEvent()
+              builder: (BuildContext context) => new addNews()
           ));
         },
       ),
@@ -28,7 +30,7 @@ class _EventsListState extends State<EventsList> {
         children: <Widget>[
           SizedBox(height: 20.0),
           StreamBuilder<QuerySnapshot>(
-              stream: db.collection('events').snapshots(),
+              stream: db.collection('news').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Column(
@@ -44,7 +46,7 @@ class _EventsListState extends State<EventsList> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text("Delete this Event"),
+                                    title: Text("Delete this Article?"),
                                     content: Text("Are you sure??"),
                                     actions: <Widget>[
                                       FlatButton(
@@ -106,18 +108,19 @@ class _EventsListState extends State<EventsList> {
 }
 
 
-class addEvent extends StatefulWidget {
+class addNews extends StatefulWidget {
   @override
-  _addEventState createState() => _addEventState();
+  _addNewsState createState() => _addNewsState();
 }
 
-class _addEventState extends State<addEvent> {
+class _addNewsState extends State<addNews> {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   String _name;
-  String _date;
+  String _tag;
   String _img;
-  String _dept;
+  String _article;
+  DateTime now = DateTime.now();
   void _submitCommand() {
     //get state of our Form
     final form = formKey.currentState;
@@ -138,12 +141,14 @@ class _addEventState extends State<addEvent> {
     final form = formKey.currentState;
 
     Firestore.instance.runTransaction((Transaction transaction) async {
-      CollectionReference reference = Firestore.instance.collection('events');
+      CollectionReference reference = Firestore.instance.collection('news');
 
       await reference.add({
         'title': _name,
-        'date': _date,
+        'subtitle': _tag,
+        'date': DateFormat(' dd MMM yyyy').format(now),
         'image': _img,
+        'article': _article,
       });
     }).then((result) =>
 
@@ -160,7 +165,7 @@ class _addEventState extends State<addEvent> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          content: new Text("event has been created"),
+          content: new Text("Article has been added"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
@@ -178,7 +183,7 @@ class _addEventState extends State<addEvent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add New event"),
+        title: Text("Add New Article"),
       ),
       body: SingleChildScrollView(
         child: SafeArea(
@@ -210,7 +215,7 @@ class _addEventState extends State<addEvent> {
                                     errorStyle: TextStyle(color: Colors.red),
                                     filled: true,
                                     fillColor: Colors.white.withOpacity(0.1),
-                                    labelText: 'Event title',
+                                    labelText: 'Tagline',
                                     labelStyle: TextStyle(
                                         fontSize: 11
                                     )
@@ -223,7 +228,7 @@ class _addEventState extends State<addEvent> {
                           ),
 
                           Padding(
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                            padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
                             child: Container(
                               child: TextFormField(
                                 style: TextStyle(
@@ -234,17 +239,19 @@ class _addEventState extends State<addEvent> {
                                     errorStyle: TextStyle(color: Colors.red),
                                     filled: true,
                                     fillColor: Colors.white.withOpacity(0.1),
-                                    labelText: 'Event Date',
+                                    labelText: 'Sub-Title',
                                     labelStyle: TextStyle(
                                         fontSize: 11
                                     )
                                 ),
                                 validator: (val) =>
                                 val.isEmpty  ? null : null,
-                                onSaved: (val) => _date = val,
+                                onSaved: (val) => _tag = val,
                               ),
                             ),
                           ),
+
+
                           Padding(
                             padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
                             child: Container(
@@ -268,11 +275,38 @@ class _addEventState extends State<addEvent> {
                               ),
                             ),
                           ),
+
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                            child: Container(
+                              child: TextFormField(
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'SFUIDisplay'
+                                ),
+                                textInputAction: TextInputAction.newline,
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                decoration: InputDecoration(
+                                    errorStyle: TextStyle(color: Colors.red),
+                                    filled: true,
+                                    fillColor: Colors.white.withOpacity(0.1),
+                                    labelText: 'Article',
+                                    labelStyle: TextStyle(
+                                        fontSize: 11
+                                    )
+                                ),
+                                validator: (val) =>
+                                val.isEmpty  ? null : null,
+                                onSaved: (val) => _article = val,
+                              ),
+                            ),
+                          ),
                           Padding(
                             padding: EdgeInsets.fromLTRB(70, 10, 70, 0),
                             child: MaterialButton(
                               onPressed: _submitCommand,
-                              child: Text('Add Event',
+                              child: Text('Add Article',
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontFamily: 'SFUIDisplay',

@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "kemu-9af65"
+    "default": "kemu-9af65",
+    "staging": "kemu-9af65"
   }
 }

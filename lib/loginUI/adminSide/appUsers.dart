@@ -53,7 +53,7 @@ class _appUsersState extends State<appUsers> {
                                                 });
                                                 Firestore.instance.collection('notifications').document(doc.data['token']).setData({
                                                 'title': "Approved!!",
-                                                'body': "Your regestration has been approved",
+                                                'body': "Your registration has been approved",
                                                 'token': doc.data['token'],
                                                 });
                                                 Navigator.of(context).pop();

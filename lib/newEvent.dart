@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class newEvents extends StatefulWidget {
@@ -15,8 +16,9 @@ class _newEventsState extends State<newEvents> {
   }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: new Column(
+    return Scaffold(
+
+      body: new Column(
         children: <Widget>[
 
           new Flexible(
@@ -49,11 +51,57 @@ class _newEventsState extends State<newEvents> {
                                   child: Column(
                                     children: <Widget>[
                                       SizedBox(
-                                        height: 10.0,
+                                        height: 30.0,
                                       ),
                                       Image.network(snapshot.data[index].data["image"], width: 281.0, height: 191.0),
                                       Text(snapshot.data[index].data["title"], style: TextStyle(fontSize: 24.0, fontFamily: "Raleway",color: Colors.white)),
                                       Text(snapshot.data[index].data["date"], style: TextStyle(fontSize: 12.0, fontFamily: "Raleway")),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width * .3,
+                                        height: 18,
+                                        child: RaisedButton(
+                                          child: Text(
+                                            "RSVP",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .button
+                                                .apply(color: Colors.white, fontSizeDelta: 2),
+
+                                          ),
+                                          color: Colors.pink[900],
+
+                                          onPressed: () async {
+                                            FirebaseUser user = await FirebaseAuth.instance.currentUser();
+                                            await Firestore.instance
+                                                .collection("rsvp")
+                                                .add({
+                                              "event": snapshot.data[index].data["title"],
+                                              "date": snapshot.data[index].data["date"],
+                                              "status": "RSVP",
+                                              "name": user.email,
+                                            }).then((result) =>
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    // return object of type Dialog
+                                                    return AlertDialog(
+                                                      content: new Text("You have RSVP'd, See you then"),
+                                                      actions: <Widget>[
+                                                        // usually buttons at the bottom of the dialog
+                                                        new FlatButton(
+                                                          child: new Text("close"),
+                                                          onPressed: () {
+                                                            Navigator.of(context).pop();
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                )
+                                            );
+                                          },
+                                        ),
+                                      ),
                                       SizedBox(
                                         height: 10.0,
                                       ),

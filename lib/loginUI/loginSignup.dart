@@ -23,6 +23,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   String _email;
   String _password;
+  String _reg;
+  String _userName;
   String _errorMessage;
 
   bool _isLoginForm;
@@ -51,7 +53,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           userId = await widget.auth.signIn(_email, _password);
           print('Signed in: $userId');
         } else {
-          userId = await widget.auth.signUp(_email, _password);
+          userId = await widget.auth.signUp(_email, _password, _userName, _reg);
           //widget.auth.sendEmailVerification();
           //_showVerifyEmailSentDialog();
           print('Signed up user: $userId');
@@ -217,6 +219,41 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
             shrinkWrap: true,
             children: <Widget>[
               showLogo(),
+              _isLoginForm ? new Offstage():
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+                child: new TextFormField(
+                  maxLines: 1,
+                  autofocus: false,
+                  decoration: new InputDecoration(
+                      hintText: 'User Name',
+                      icon: new Icon(
+                        Icons.person_outline,
+                        color: Colors.grey,
+                      )),
+                  autocorrect: false,
+                  validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+                  onSaved: (value) => _userName = value.trim(),
+                ),
+              ),
+              _isLoginForm ? new Offstage():
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+                child: new TextFormField(
+                  maxLines: 1,
+                  autofocus: false,
+                  decoration: new InputDecoration(
+                      hintText: 'Registration Number',
+                      icon: new Icon(
+                        Icons.edit,
+                        color: Colors.grey,
+                      )),
+                  inputFormatters: [maskTextInputFormatter],
+                  autocorrect: false,
+                  validator: (value) => value.isEmpty ? 'Field can\'t be empty' : null,
+                  onSaved: (value) => _reg = value.trim(),
+                ),
+              ),
               showEmailInput(),
               showPasswordInput(),
               showPrimaryButton(),
@@ -249,7 +286,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
     return new Hero(
       tag: 'hero',
       child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
+        padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
         child: CircleAvatar(
           backgroundColor: Colors.transparent,
           radius: 60.0,
@@ -261,7 +298,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   Widget showEmailInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
       child: new TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
@@ -286,17 +323,20 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         obscureText: true,
         autofocus: false,
         decoration: new InputDecoration(
-            hintText: 'cis-1-3030-2/2016',
+            hintText: 'Password',
             icon: new Icon(
               Icons.lock,
               color: Colors.grey,
             )),
-        inputFormatters: [maskTextInputFormatter],
         autocorrect: false,
-        validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+        validator: (value) => value.length < 6 ? 'Password should be atleast 5 characters' : null,
         onSaved: (value) => _password = value.trim(),
       ),
     );
+  }
+
+  Widget nameReg() {
+
   }
 
   Widget showSecondaryButton() {

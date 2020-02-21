@@ -29,7 +29,8 @@ dependencies:
   path_provider: ^1.4.0
   firebase_auth: any
   mask_text_input_formatter: ^1.0.5
-  firebase_messaging: any
+  firebase_messaging: ^5.0.4
+  intl: any
 
 dev_dependencies:
   flutter_test:

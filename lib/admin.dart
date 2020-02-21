@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/adminUI/addEvent.dart';
+import 'package:kemu_alumni/adminUI/addNews.dart';
 import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/loginUI/adminSide/appUsers.dart';
 import 'package:kemu_alumni/loginUI/adminSide/userSections.dart';
@@ -160,7 +161,7 @@ class _DashboardState extends State<Dashboard> {
 
                 GestureDetector(
                   onTap: (){
-                    Navigator.of(context).push(FadeRouteBuilder(page: new Events()));
+                    Navigator.of(context).push(FadeRouteBuilder(page: new NewsList()));
                   },
                   child: Card(
                     clipBehavior: Clip.antiAlias,
@@ -178,7 +179,7 @@ class _DashboardState extends State<Dashboard> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text('Chat', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
+                                Text('News', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
                               ],
                             ),

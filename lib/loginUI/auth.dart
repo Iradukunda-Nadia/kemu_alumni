@@ -6,7 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 abstract class BaseAuth {
   Future<String> signIn(String email, String password);
 
-  Future<String> signUp(String email, String password);
+  Future<String> signUp(String email, String password, String userName, String reg);
 
   Future<FirebaseUser> getCurrentUser();
 
@@ -28,7 +28,7 @@ class Auth implements BaseAuth {
     return user.uid;
   }
 
-  Future<String> signUp(String email, String password) async {
+  Future<String> signUp(String email, String password, String userName, String reg) async {
     AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
     FirebaseUser user = result.user;
@@ -42,6 +42,8 @@ class Auth implements BaseAuth {
         .setData({
       "name": user.email,
       "id": user.uid,
+      "userName": userName,
+      "reg": reg,
       "token": fcmToken,
       "status": "pending",
     });

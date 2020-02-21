@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:kemu_alumni/chat.dart';
 import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
+import 'package:kemu_alumni/profile.dart';
 import 'dart:ui';
 import 'loginUI/home.dart';
+import 'loginUI/loginSignup.dart';
+import 'newEvent.dart';
 
 class tabView extends StatefulWidget {
   tabView({Key key, this.auth, this.userId, this.logoutCallback})
@@ -79,14 +82,37 @@ class _tabViewState extends State<tabView> with SingleTickerProviderStateMixin {
           children: <Widget>[
             new DrawerHeader(decoration: new BoxDecoration(
               color: Colors.pink[900],
-            ),),
+            ),
+              child: new Center(
+                child: new Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.end,
+
+                    children: <Widget>[
+                      new Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          new Container(
+                            height: 100.0,
+                            width: 200.0,
+                            child: new Image.asset("assets/logo.png"),
+                          )
+
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),),
             new Divider(),
             new ListTile(
               leading: new Icon(Icons.group),
               title: new Text("Admin"),
               onTap: (){
                 Navigator.of(context).push(new CupertinoPageRoute(
-                    builder: (BuildContext context) => new Events()
+                    builder: (BuildContext context) => new Staff()
                 ));
               },
             ),
@@ -96,7 +122,7 @@ class _tabViewState extends State<tabView> with SingleTickerProviderStateMixin {
 
       body: new TabBarView(
         // Add tabs as widgets
-        children: <Widget>[new Home(),  new Events(), new Events(), ],
+        children: <Widget>[new Home(),  new newEvents(), new Profile(), ],
         // set the controller
         controller: controller,
       ),
@@ -108,16 +134,16 @@ class _tabViewState extends State<tabView> with SingleTickerProviderStateMixin {
         child: new TabBar(
           tabs: <Tab>[
             new Tab(
-              text: 'HOME',// set icon to the tab
+              text: 'Home',// set icon to the tab
               icon: new Icon(Icons.home),
             ),
             new Tab(
-              text: 'CHAT',
-              icon: new Icon(Icons.calendar_today),
+              text: 'Events',
+              icon: new Icon(Icons.forum),
             ),
             new Tab(
-              text: 'CLASS',
-              icon: new Icon(Icons.calendar_today),
+              text: 'Profile',
+              icon: new Icon(Icons.person),
             ),
 
           ],

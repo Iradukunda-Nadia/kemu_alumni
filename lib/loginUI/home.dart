@@ -2,7 +2,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/homeUI.dart';
+import 'package:kemu_alumni/jobs.dart';
 import 'package:kemu_alumni/newEvent.dart';
+import 'package:kemu_alumni/news.dart';
+import 'package:kemu_alumni/scholarships.dart';
 
 
 
@@ -43,7 +46,7 @@ class _HomeState extends State<Home> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: newEvents()));
+                        Navigator.of(context).push(FadeRouteBuilder(page: News()));
                       },
                       child: Card(
                         clipBehavior: Clip.antiAlias,
@@ -62,7 +65,7 @@ class _HomeState extends State<Home> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('Events', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
+                                    Text('News', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
                                   ],
                                 ),
@@ -74,7 +77,7 @@ class _HomeState extends State<Home> {
                     ),
                     GestureDetector(
                       onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new Events()));
+                        Navigator.of(context).push(FadeRouteBuilder(page: new Jobs()));
                       },
                       child: Card(
                         clipBehavior: Clip.antiAlias,
@@ -104,7 +107,7 @@ class _HomeState extends State<Home> {
                     ),
                     GestureDetector(
                       onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new Events()));
+                        Navigator.of(context).push(FadeRouteBuilder(page: new Scholarships()));
                       },
                       child: Card(
                         clipBehavior: Clip.antiAlias,
@@ -114,7 +117,7 @@ class _HomeState extends State<Home> {
                           children: <Widget>[
                             AspectRatio(
                                 aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.settings_applications, size: 50.0, color: Colors.pink[900],)
+                                child: Icon(Icons.import_contacts, size: 50.0, color: Colors.pink[900],)
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
@@ -144,7 +147,7 @@ class _HomeState extends State<Home> {
                           children: <Widget>[
                             AspectRatio(
                                 aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.group, size: 50.0, color: Colors.pink[900],)
+                                child: Icon(Icons.layers, size: 50.0, color: Colors.pink[900],)
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
@@ -174,7 +177,7 @@ class _HomeState extends State<Home> {
                           children: <Widget>[
                             AspectRatio(
                                 aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.group, size: 50.0, color: Colors.pink[900],)
+                                child: Icon(Icons.monetization_on, size: 50.0, color: Colors.pink[900],)
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
@@ -204,7 +207,7 @@ class _HomeState extends State<Home> {
                           children: <Widget>[
                             AspectRatio(
                                 aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.group, size: 50.0, color: Colors.pink[900],)
+                                child: Icon(Icons.poll, size: 50.0, color: Colors.pink[900],)
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
