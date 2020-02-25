@@ -33,63 +33,76 @@ class _EventsListState extends State<EventsList> {
                 if (snapshot.hasData) {
                   return Column(
                     children: snapshot.data.documents.map((doc) {
-                      return ListTile(
-                        leading: Image.network(doc.data["image"]),
-                        title: Text("${doc.data["title"]}"),
-                        subtitle: Text("${doc.data["date"]}"),
-                        trailing: RaisedButton(
-                          color: Colors.pink[900],
-                          onPressed: () async {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text("Delete this Event"),
-                                    content: Text("Are you sure??"),
-                                    actions: <Widget>[
-                                      FlatButton(
-                                        child: Text("Yes"),
-                                        onPressed: () async {
-                                          await db
-                                              .collection('events')
-                                              .document(doc.documentID)
-                                              .delete();
-                                          Navigator.of(context).pop();
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: Text("Deleted"),
-                                                  content: Text("Stand deleted from database"),
-                                                  actions: <Widget>[
-                                                    FlatButton(
-                                                      child: Text("Close"),
-                                                      onPressed: () {
-                                                        Navigator.of(context).pop();
-                                                      },
-                                                    )
-                                                  ],
-                                                );
-                                              });
-                                        },
-                                      ),
-                                      FlatButton(
-                                        child: Text("No"),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      )
-                                    ],
-                                  );
-                                });
+                      return GestureDetector(
+                        onTap: (){
+                          Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> new eventReserves(
 
-                          },
-                          child: new Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              new Text('Delete',style: TextStyle(color: Colors.white),),
-                            ],
+                            itemImage: doc.data["image"],
+                            eventTitle: doc.data["title"],
+                            eventDate: doc.data["date"],
+                            eventID: doc.documentID,
+
+
+                          )));
+                        },
+                        child: ListTile(
+                          leading: Image.network(doc.data["image"]),
+                          title: Text("${doc.data["title"]}"),
+                          subtitle: Text("${doc.data["date"]}"),
+                          trailing: RaisedButton(
+                            color: Colors.pink[900],
+                            onPressed: () async {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Delete this Event"),
+                                      content: Text("Are you sure??"),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          child: Text("Yes"),
+                                          onPressed: () async {
+                                            await db
+                                                .collection('events')
+                                                .document(doc.documentID)
+                                                .delete();
+                                            Navigator.of(context).pop();
+                                            showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: Text("Deleted"),
+                                                    content: Text("Stand deleted from database"),
+                                                    actions: <Widget>[
+                                                      FlatButton(
+                                                        child: Text("Close"),
+                                                        onPressed: () {
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                      )
+                                                    ],
+                                                  );
+                                                });
+                                          },
+                                        ),
+                                        FlatButton(
+                                          child: Text("No"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        )
+                                      ],
+                                    );
+                                  });
+
+                            },
+                            child: new Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                new Text('Delete',style: TextStyle(color: Colors.white),),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -303,6 +316,90 @@ class _addEventState extends State<addEvent> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class eventReserves extends StatefulWidget {
+  String itemImage;
+  String eventTitle;
+  String eventDate;
+  String eventID;
+
+  eventReserves({
+
+    this.itemImage,
+    this.eventTitle,
+    this.eventDate,
+    this.eventID,
+  });
+
+  @override
+  _eventReservesState createState() => _eventReservesState();
+}
+
+class _eventReservesState extends State<eventReserves> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("RSVP's"),
+      ),
+      body: Column(
+        children: <Widget>[
+          Stack(
+            children: <Widget>[
+              Container(
+                alignment: Alignment.center,
+                  padding: EdgeInsets.only(left: 10.0),
+                  height: MediaQuery.of(context).size.width * 0.2,
+                  width: MediaQuery.of(context).size.width * 0.2,
+                  decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                      image: new NetworkImage(widget.itemImage),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+
+              ),
+            ],
+          ),
+
+          ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.all(12.0),
+            children: <Widget>[
+              Center(child: Text("Registered to attend")),
+              SizedBox(height: 20.0),
+              StreamBuilder<QuerySnapshot>(
+                  stream: Firestore.instance.collection('rsvp').where("event", isEqualTo: widget.eventTitle).snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        children: snapshot.data.documents.map((doc) {
+                          return GestureDetector(
+                            onTap: (){},
+                            child: Card(
+                              elevation: 5,
+                              child: ListTile(
+                                leading: Icon(Icons.person, color: Colors.pink[900],),
+                                title: Text(doc.data['name'], style: TextStyle(fontSize: 18),),
+
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    } else {
+                      return SizedBox();
+                    }
+                  }),
+            ],
+          ),
+
+
+        ],
       ),
     );
   }

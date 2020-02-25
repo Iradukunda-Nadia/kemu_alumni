@@ -12,6 +12,7 @@ class _ProfileState extends State<Profile> {
   String name;
   String email;
   String reg;
+  String img;
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _ProfileState extends State<Profile> {
             name = document['userName'];
             email = user.email;
             reg = document['reg'];
+            img = document['img'];
 
           });
 
@@ -63,7 +65,16 @@ class _ProfileState extends State<Profile> {
             children: <Widget>[
               CircleAvatar(
                 radius: 70,
-                child: new Icon(Icons.person, size: 50.0,),
+                child: img == null ? new Icon(Icons.person, color: Colors.white, size: 50,):
+                Container(
+                    padding: EdgeInsets.only(left: 10.0),
+                    decoration: new BoxDecoration(
+                      image: new DecorationImage(
+                        image: new NetworkImage(img),
+                        fit: BoxFit.cover,
+                      ),
+                      shape: BoxShape.circle,
+                    )),
               ),
               SizedBox(
                 height: 20.0,

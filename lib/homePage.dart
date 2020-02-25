@@ -80,6 +80,12 @@ class _HomePageState extends State<HomePage> {
             ));
 
           }
+          if( state == "suspended") {
+            Navigator.of(context).push(new CupertinoPageRoute(
+                builder: (BuildContext context) => new Denied()
+            ));
+
+          }
 
 
         });

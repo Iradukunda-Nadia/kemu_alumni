@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Jobs extends StatefulWidget {
   @override
@@ -10,6 +11,8 @@ class Jobs extends StatefulWidget {
 }
 
 class _JobsState extends State<Jobs> {
+
+
   Future getUsers() async{
     var firestore = Firestore.instance;
     QuerySnapshot qn = await firestore.collection("jobs").orderBy("date", descending: true).getDocuments();
@@ -493,6 +496,19 @@ class jobDetail extends StatefulWidget {
 }
 
 class _jobDetailState extends State<jobDetail> {
+
+  String urlData;
+
+  _launchURL() async {
+    String url = urlData;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -589,7 +605,13 @@ class _jobDetailState extends State<jobDetail> {
                               .apply(color: Colors.white),
                         ),
                         color: Colors.pink[900],
-                        onPressed: () {},
+                        onPressed: () {
+                         setState(() {
+                           urlData = widget.link;
+                         });
+
+                         _launchURL();
+                        },
                       ),
                     )
                   ],

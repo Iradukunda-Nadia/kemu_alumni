@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class Scholarships extends StatefulWidget {
@@ -477,6 +478,17 @@ class scholarshipDetail extends StatefulWidget {
 }
 
 class _scholarshipDetailState extends State<scholarshipDetail> {
+  String urlData;
+
+  _launchURL() async {
+    String url = urlData;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -566,14 +578,20 @@ class _scholarshipDetailState extends State<scholarshipDetail> {
                       height: 45,
                       child: RaisedButton(
                         child: Text(
-                          "Job Link",
+                          "Scholarship Link",
                           style: Theme.of(context)
                               .textTheme
                               .button
                               .apply(color: Colors.white),
                         ),
                         color: Colors.pink[900],
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            urlData = widget.link;
+                          });
+
+                          _launchURL();
+                        },
                       ),
                     )
                   ],

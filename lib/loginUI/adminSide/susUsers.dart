@@ -1,25 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class approvedUser extends StatefulWidget {
+class Suspended extends StatefulWidget {
   @override
-  _approvedUserState createState() => _approvedUserState();
+  _SuspendedState createState() => _SuspendedState();
 }
 
-class _approvedUserState extends State<approvedUser> {
+class _SuspendedState extends State<Suspended> {
   final db = Firestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Approved users"),
-      backgroundColor: Colors.pink[900],),
+      appBar: AppBar(title: Text("Suspended users"),
+        backgroundColor: Colors.pink[900],),
       body: ListView(
         padding: EdgeInsets.all(12.0),
         children: <Widget>[
           SizedBox(height: 20.0),
           StreamBuilder<QuerySnapshot>(
-              stream: db.collection('users').where("status", isEqualTo: "approved").snapshots(),
+              stream: db.collection('users').where("status", isEqualTo: "suspended").snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Column(
@@ -35,7 +34,7 @@ class _approvedUserState extends State<approvedUser> {
                               width: 60,
                               height: 20,
                               child: RaisedButton(
-                                  child: Text("Suspend",style: TextStyle(fontSize: 6 , color: Colors.white),
+                                  child: Text("Approve",style: TextStyle(fontSize: 6, color: Colors.white),
 
                                   ),
                                   color: Colors.pink[900],
@@ -45,7 +44,7 @@ class _approvedUserState extends State<approvedUser> {
                                       context: context,
                                       builder: (BuildContext context){
                                         return AlertDialog(
-                                          title: Text("Suspend this user?"),
+                                          title: Text("Approve this user?"),
                                           actions: <Widget>[
                                             FlatButton(
                                               child: Text("Yes"),
@@ -54,15 +53,15 @@ class _approvedUserState extends State<approvedUser> {
                                                     .collection('users')
                                                     .document(doc.documentID)
                                                     .updateData({
-                                                  'status': "suspended",
+                                                  'status': "approved",
                                                 });
                                                 Navigator.of(context).pop();
                                                 showDialog(
                                                     context: context,
                                                     builder: (BuildContext context) {
                                                       return AlertDialog(
-                                                        title: Text("Suspended"),
-                                                        content: Text("This user has been suspended"),
+                                                        title: Text("User Approved"),
+                                                        content: Text("This user has been Approved"),
                                                         actions: <Widget>[
                                                           FlatButton(
                                                             child: Text("Close"),

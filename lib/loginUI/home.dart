@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:kemu_alumni/elections.dart';
 import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/homeUI.dart';
 import 'package:kemu_alumni/jobs.dart';
@@ -117,7 +118,7 @@ class _HomeState extends State<Home> {
                           children: <Widget>[
                             AspectRatio(
                                 aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.import_contacts, size: 50.0, color: Colors.pink[900],)
+                                child: Icon(Icons.school, size: 50.0, color: Colors.pink[900],)
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
@@ -197,7 +198,7 @@ class _HomeState extends State<Home> {
                     ),
                     GestureDetector(
                       onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new Events()));
+                        Navigator.of(context).push(FadeRouteBuilder(page: new VotingHomePage()));
                       },
                       child: Card(
                         clipBehavior: Clip.antiAlias,

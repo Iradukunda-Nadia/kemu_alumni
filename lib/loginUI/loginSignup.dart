@@ -25,6 +25,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   String _password;
   String _reg;
   String _userName;
+  String _profImage;
   String _errorMessage;
 
   bool _isLoginForm;
@@ -53,7 +54,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           userId = await widget.auth.signIn(_email, _password);
           print('Signed in: $userId');
         } else {
-          userId = await widget.auth.signUp(_email, _password, _userName, _reg);
+          userId = await widget.auth.signUp(_email, _password, _userName, _reg, _profImage);
           //widget.auth.sendEmailVerification();
           //_showVerifyEmailSentDialog();
           print('Signed up user: $userId');
@@ -252,6 +253,23 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
                   autocorrect: false,
                   validator: (value) => value.isEmpty ? 'Field can\'t be empty' : null,
                   onSaved: (value) => _reg = value.trim(),
+                ),
+              ),
+              _isLoginForm ? new Offstage():
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+                child: new TextFormField(
+                  maxLines: 1,
+                  autofocus: false,
+                  decoration: new InputDecoration(
+                      hintText: 'Image Url',
+                      icon: new Icon(
+                        Icons.image,
+                        color: Colors.grey,
+                      )),
+                  autocorrect: false,
+                  validator: (value) => value.isEmpty ? 'Field can\'t be empty' : null,
+                  onSaved: (value) => _profImage = value.trim(),
                 ),
               ),
               showEmailInput(),

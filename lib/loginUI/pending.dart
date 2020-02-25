@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
 
@@ -26,10 +27,6 @@ class _PendingState extends State<Pending> {
 
 
 class Denied extends StatefulWidget {
-  Denied({this.auth, this.loginCallback});
-
-  final BaseAuth auth;
-  final VoidCallback loginCallback;
 
   @override
   _DeniedState createState() => _DeniedState();
@@ -40,8 +37,18 @@ class _DeniedState extends State<Denied> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: Center(
-          child: Text("Your Registration is Denied"),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text("Your Registration has been suspended."),
+                Text("Contact admin for more information."),
+              ],
+            ),
+          ),
         ),
       ),
     );

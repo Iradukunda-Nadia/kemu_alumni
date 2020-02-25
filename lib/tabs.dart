@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -6,9 +7,11 @@ import 'package:kemu_alumni/chat.dart';
 import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
 import 'package:kemu_alumni/profile.dart';
+import 'package:kemu_alumni/rsvp.dart';
 import 'dart:ui';
 import 'loginUI/home.dart';
 import 'loginUI/loginSignup.dart';
+import 'loginUI/root.dart';
 import 'newEvent.dart';
 
 class tabView extends StatefulWidget {
@@ -47,6 +50,15 @@ class _tabViewState extends State<tabView> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  _signOut() async {
+    await _firebaseAuth.signOut();
+    Navigator.of(context).push(new CupertinoPageRoute(
+        builder: (BuildContext context) => new RootPage(auth: new Auth())
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -73,7 +85,34 @@ class _tabViewState extends State<tabView> with SingleTickerProviderStateMixin {
                   }),
 
             ],
-          )
+          ),
+          new Stack(
+            alignment: Alignment.topLeft,
+            children: <Widget>[
+              PopupMenuButton(
+                icon: new Icon(Icons.person, color: Colors.white,),
+                onSelected: (String value) {
+                  switch (value) {
+                    case 'logout':
+                      _signOut();
+                      break;
+                  // Other cases for other menu options
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem<String>(
+                    value: "logout",
+                    child: Row(
+                      children: <Widget>[
+                        Text("LOGOUT"),
+                        Icon(Icons.exit_to_app, color: Colors.pink[900],),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ],
       ),
 
@@ -113,6 +152,26 @@ class _tabViewState extends State<tabView> with SingleTickerProviderStateMixin {
               onTap: (){
                 Navigator.of(context).push(new CupertinoPageRoute(
                     builder: (BuildContext context) => new Staff()
+                ));
+              },
+            ),
+            new Divider(),
+            new ListTile(
+              leading: new Icon(Icons.assignment),
+              title: new Text("My RSVPs"),
+              onTap: (){
+                Navigator.of(context).push(new CupertinoPageRoute(
+                    builder: (BuildContext context) => new myRsvp()
+                ));
+              },
+            ),
+            new Divider(),
+            new ListTile(
+              leading: new Icon(Icons.border_color),
+              title: new Text("My Votes"),
+              onTap: (){
+                Navigator.of(context).push(new CupertinoPageRoute(
+                    builder: (BuildContext context) => new myVotes()
                 ));
               },
             ),
