@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:kemu_alumni/contributions.dart';
 import 'package:kemu_alumni/elections.dart';
 import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/homeUI.dart';
@@ -168,7 +169,7 @@ class _HomeState extends State<Home> {
                     ),
                     GestureDetector(
                       onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new Events()));
+                        Navigator.of(context).push(FadeRouteBuilder(page: new Contributions()));
                       },
                       child: Card(
                         clipBehavior: Clip.antiAlias,

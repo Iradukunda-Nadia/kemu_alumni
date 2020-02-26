@@ -281,7 +281,7 @@ class _regCandState extends State<regCand> {
       CollectionReference reference = Firestore.instance.collection('candidates');
 
       await reference.add({
-        'position': Item,
+        'cat': Item,
         'date': DateTime.now(),
         'req': _requirements,
         'name': name,
@@ -291,33 +291,27 @@ class _regCandState extends State<regCand> {
       });
     }).then((result) =>
 
-        _showRequest());
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            // return object of type Dialog
+            return AlertDialog(
+              content: new Text("You have been Registered"),
+              actions: <Widget>[
+                // usually buttons at the bottom of the dialog
+                new FlatButton(
+                  child: new Text("close"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        ));
   }
 
-  void _showRequest() {
-    // flutter defined function
-    final form = formKey.currentState;
-    form.reset();
-    var context;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          content: new Text("data has been added"),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 
   @override
   void initState() {

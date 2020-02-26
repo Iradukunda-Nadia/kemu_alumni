@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
 import 'package:kemu_alumni/loginUI/root.dart';
+import 'mpesa/mpesa_flutter_plugin.dart';
 
-void main() => runApp(MyApp());
+void main(){
+  MpesaFlutterPlugin.setConsumerKey('hwjt1AQ4c7lRDexArlWwgtjfQYlraMMO');
+  MpesaFlutterPlugin.setConsumerSecret('fauvPwIHPhGmUl3E');
+
+  runApp(new MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
