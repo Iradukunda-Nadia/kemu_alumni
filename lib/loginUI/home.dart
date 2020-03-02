@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:kemu_alumni/applications.dart';
 import 'package:kemu_alumni/contributions.dart';
 import 'package:kemu_alumni/elections.dart';
 import 'package:kemu_alumni/events.dart';
@@ -139,7 +140,7 @@ class _HomeState extends State<Home> {
                     ),
                     GestureDetector(
                       onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new Events()));
+                        Navigator.of(context).push(FadeRouteBuilder(page: new courseSec()));
                       },
                       child: Card(
                         clipBehavior: Clip.antiAlias,
@@ -157,7 +158,7 @@ class _HomeState extends State<Home> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('Applications', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
+                                    Text('Courses', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
                                   ],
                                 ),

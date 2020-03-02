@@ -5,6 +5,9 @@ import 'package:kemu_alumni/adminUI/addEvent.dart';
 import 'package:kemu_alumni/adminUI/addNews.dart';
 import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/loginUI/adminSide/appUsers.dart';
+import 'package:kemu_alumni/loginUI/adminSide/courses.dart';
+import 'package:kemu_alumni/loginUI/adminSide/elect.dart';
+import 'package:kemu_alumni/loginUI/adminSide/funds.dart';
 import 'package:kemu_alumni/loginUI/adminSide/userSections.dart';
 import 'package:kemu_alumni/loginUI/background.dart';
 import 'package:kemu_alumni/loginUI/root.dart';
@@ -32,6 +35,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.pink[900],
 
       body: Column(
         children: <Widget>[
@@ -104,12 +108,14 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
+
+
             ],
           ),
           Expanded(
             child: SingleChildScrollView(
               child: GridView.count(
-                crossAxisCount: 2,
+                crossAxisCount: 3,
                 shrinkWrap: true,
                 padding: EdgeInsets.all(16.0),
                 childAspectRatio: 9.0 / 9.0,
@@ -178,7 +184,7 @@ class _DashboardState extends State<Dashboard> {
 
                   GestureDetector(
                     onTap: (){
-                      Navigator.of(context).push(FadeRouteBuilder(page: new Events()));
+                      Navigator.of(context).push(FadeRouteBuilder(page: new Elect()));
                     },
                     child: Card(
                       clipBehavior: Clip.antiAlias,
@@ -228,6 +234,66 @@ class _DashboardState extends State<Dashboard> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text('News', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
+
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).push(FadeRouteBuilder(page: new Courses()));
+                    },
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 10,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          AspectRatio(
+                              aspectRatio: 18.0 / 11.0,
+                              child: Icon(Icons.school, size: 50.0, color: Colors.pink[900],)
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
+                            child: Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text('Courses', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
+
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).push(FadeRouteBuilder(page: new Funds()));
+                    },
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 10,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          AspectRatio(
+                              aspectRatio: 18.0 / 11.0,
+                              child: Icon(Icons.attach_money, size: 50.0, color: Colors.pink[900],)
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
+                            child: Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text('Funds', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
                                 ],
                               ),

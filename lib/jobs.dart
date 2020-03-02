@@ -26,6 +26,17 @@ class _JobsState extends State<Jobs> {
         title: Text("Job Openings"),
         centerTitle: true,
         backgroundColor: Colors.pink[900],
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: CustomSearchDelegate(),
+              );
+            },
+          ),
+        ],
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -717,35 +728,32 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder(
-        stream: Firestore.instance.collection('jobs').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return new Text('Loading...');
-          }
-          else if (snapshot.data.length == 0) {
-            return Column(
-              children: <Widget>[
-                Text(
-                  "No Results Found.",
-                ),
-              ],
-            );
-          }
+      stream: Firestore.instance.collection('jobs').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return new Text('Loading...');
 
-          else {
-            var results = snapshot.data.documents.where((DocumentSnapshot a) =>
-                a.data['position'].toString().contains(query));
-            return ListView.builder(
-              itemCount: results.length,
-              itemBuilder: (context, index) {
-                var result = results[index];
-                return ListTile(
-                  title: Text(result.position),
-                );
+        final results = snapshot.data.documents.where((DocumentSnapshot a) => a.data['position'].toString().contains(query));
+
+        return ListView(
+            children: results.map<Widget>((a) => ListTile(
+              leading: new Icon(Icons.arrow_right),
+              title: Text(a.data['position'].toString()),
+              onTap: (){
+                Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> new jobDetail(
+
+                  company: a.data["company"],
+                  position: a.data["position"],
+                  desc: a.data["desc"],
+                  location: a.data["location"],
+                  req: a.data["req"],
+                  link: a.data["link"],
+
+
+                )));
               },
-            );
-          }
-        }
+            )).toList()
+        );
+      },
     );
   }
 }

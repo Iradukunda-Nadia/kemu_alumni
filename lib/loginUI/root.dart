@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/homePage.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
+import 'package:kemu_alumni/tabs.dart';
 
 import 'loginSignup.dart';
 
@@ -79,7 +80,7 @@ class _RootPageState extends State<RootPage> {
         break;
       case AuthStatus.LOGGED_IN:
         if (_userId.length > 0 && _userId != null) {
-          return new HomePage(
+          return new tabView(
             userId: _userId,
             auth: widget.auth,
             logoutCallback: logoutCallback,

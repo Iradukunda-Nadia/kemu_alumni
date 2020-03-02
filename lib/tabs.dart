@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,77 @@ class _tabViewState extends State<tabView> with SingleTickerProviderStateMixin {
   String _email;
   String id;
   String _password;
+  String state;
   bool isLoggedIn = false;
+
+  _voterCheck() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    var collectionReference = Firestore.instance.collection('users');
+    var query = collectionReference.where("name", isEqualTo: user.email );
+    query.getDocuments().then((querySnapshot) {
+      if (querySnapshot.documents.length > 0) {
+        querySnapshot.documents.forEach((document)
+        async {
+          setState(() {
+            state = document['status'];
+
+          });
+
+
+          if( state == "suspended" ) {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                // return object of type Dialog
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: AlertDialog(
+                    content: new Text("Your account has been Suspended. \n Contact admin for more info "),
+                    actions: <Widget>[
+                      // usually buttons at the bottom of the dialog
+                      new FlatButton(
+                        child: new Text("BACK"),
+                        onPressed: () {
+                          _signOut();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
+
+          if( state == "pending" ) {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                // return object of type Dialog
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: AlertDialog(
+                    content: new Text("Your account is pending approval"),
+                    actions: <Widget>[
+                      // usually buttons at the bottom of the dialog
+                      new FlatButton(
+                        child: new Text("BACK"),
+                        onPressed: () {
+                          _signOut();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
+
+        });
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -42,6 +113,7 @@ class _tabViewState extends State<tabView> with SingleTickerProviderStateMixin {
 
     // Initialize the Tab Controller
     controller = new TabController(length: 3, vsync: this);
+    _voterCheck();
   }
 
   @override

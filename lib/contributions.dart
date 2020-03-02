@@ -480,12 +480,7 @@ class _ReceiptsState extends State<Receipts> {
           fullName = user.displayName;
           profileImgUrl = user.photoUrl;
           user = user;
-          //profileImgUrl = googleSignIn.currentUser.photoUrl;
 
-//          UserUpdateInfo userUpdateInfo = new UserUpdateInfo();
-//          userUpdateInfo.photoUrl = "";
-//          userUpdateInfo.displayName = "Esther Tony";
-//          _auth.updateProfile(userUpdateInfo);
         });
       }
     });
