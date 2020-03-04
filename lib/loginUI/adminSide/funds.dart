@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Funds extends StatefulWidget {
   @override
@@ -71,13 +72,15 @@ class _FundsState extends State<Funds> {
         setState(() {
           _cont = document['amount'];
           _contri = int.parse(_cont);
-          newTotal = total + _contri;
+          newTotal = total += _contri;
           contString = newTotal.toString();
         });
       });
     }
     );
   }
+
+  final formatCurrency = new NumberFormat.simpleCurrency();
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +94,7 @@ class _FundsState extends State<Funds> {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.pink[900],
         icon: Icon(Icons.attach_money),
-        label: new Text('TOTAL: KSH.${contString}', style: TextStyle(fontSize: 20),),
+        label: new Text('TOTAL: KSH.${formatCurrency.format(newTotal)}', style: TextStyle(fontSize: 20),),
         //Widget to display inside Floating Action Button, can be `Text`, `Icon` or any widget.
         onPressed: () {},
       ),

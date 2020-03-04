@@ -62,7 +62,11 @@ class _courseSecState extends State<courseSec> {
               padding:
               const EdgeInsets.symmetric(vertical: 8.0, horizontal: 40.0),
               child: new InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(new CupertinoPageRoute(
+                      builder: (BuildContext context) => new phd()
+                  ));
+                },
                 child: new Container(
                   height: 60.0,
                   margin: new EdgeInsets.only(top: 5.0),
@@ -265,6 +269,177 @@ class _ApplicationsState extends State<Applications> {
     );
   }
 }
+
+class phd extends StatefulWidget {
+  @override
+  _phdState createState() => _phdState();
+}
+
+class _phdState extends State<phd> {
+  String _cat;
+
+
+
+  Future getSchool() async{
+    var firestore = Firestore.instance;
+    QuerySnapshot qn = await firestore.collection("school").orderBy("name" , descending: false).getDocuments();
+    return qn.documents;
+
+  }
+
+  Future getCourse() async{
+    var firestore = Firestore.instance;
+    QuerySnapshot qn = await firestore.collection("courses").where("cat", isEqualTo: _cat ).where("type", isEqualTo: "phd").getDocuments();
+    return qn.documents;
+
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      _cat = "Agriculture";
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text("PHD"), backgroundColor: Colors.pink[900], centerTitle: true,),
+        body: SingleChildScrollView(
+          child: Container(
+            height: 1100,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                new Flexible(
+                  child: FutureBuilder(
+                      future: getSchool(),
+                      builder: (context, snapshot){
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(
+                            child: Text("Loading... Please wait"),
+                          );
+                        }if (snapshot.data == null){
+                          return Center(
+                            child: Text("The is no data"),);
+                        }else{
+                          return ConstrainedBox(
+                            constraints: new BoxConstraints(
+                              minHeight: 30.0,
+                              maxHeight: 60.0,
+                            ),
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: snapshot.data.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
+                                      child: MaterialButton(
+                                        onPressed: (){
+                                          setState(() {
+                                            _cat = snapshot.data[index].data["name"];
+                                          });
+                                        },
+                                        child: Text(snapshot.data[index].data["name"],
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontFamily: 'SFUIDisplay',
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        color: Colors.pink[900],
+                                        elevation: 10.0,
+                                        minWidth: 80,
+                                        height: 30,
+                                        textColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(20)
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+
+                              },
+                            ),
+                          );
+
+                        }
+                      }),),
+
+                new Flexible(
+                  fit: FlexFit.loose,
+                  child: FutureBuilder(
+                      future: getCourse(),
+                      builder: (context, snapshot){
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(
+                            child: Text("Loading... Please wait"),
+                          );
+                        }if (snapshot.data == null){
+                          return Center(
+                            child: Text("There is no data"),);
+                        }else{
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return new GestureDetector(
+                                onTap: (){
+                                  Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> new courseDetail(
+
+                                    title: snapshot.data[index].data["title"],
+                                    deadline: snapshot.data[index].data["deadline"],
+                                    desc: snapshot.data[index].data["desc"],
+                                    location: snapshot.data[index].data["offered"],
+                                    intake: snapshot.data[index].data["intake"],
+                                    content: snapshot.data[index].data["content"],
+                                    index: index,
+
+
+                                  )));
+                                },
+                                child: new Card(
+                                  child: Stack(
+                                    alignment: FractionalOffset.topLeft,
+                                    children: <Widget>[
+                                      new ListTile(
+                                        title: new Text("${snapshot.data[index].data["title"]}",
+                                          style: new TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 18.0,
+                                              color: Colors.pink[900]),),
+                                        subtitle: new Text("${snapshot.data[index].data["school"]}",
+                                          style: new TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 12.0,
+                                              color: Colors.grey),),
+                                      ),
+
+                                    ],
+                                  ),
+                                ),
+                              );
+
+                            },
+                          );
+
+                        }
+                      }),)
+
+              ],
+            ),
+          ),
+        )
+    );
+  }
+}
+
 
 class courseDetail extends StatefulWidget {
   String title;
