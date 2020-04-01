@@ -6,6 +6,8 @@ import 'package:kemu_alumni/admin.dart';
 import 'package:kemu_alumni/events.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
 import 'package:kemu_alumni/loginUI/background.dart';
+import 'package:kemu_alumni/staff/academics.dart';
+import 'package:kemu_alumni/staff/finance.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class LoginSignupPage extends StatefulWidget {
@@ -61,6 +63,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         }
         setState(() {
           _isLoading = false;
+          _formKey.currentState.reset();
+
         });
 
         if (userId.length > 0 && userId != null && _isLoginForm) {
@@ -71,7 +75,6 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         setState(() {
           _isLoading = false;
           _errorMessage = e.message;
-          _formKey.currentState.reset();
         });
       }
     }
@@ -153,11 +156,22 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       _isLoginForm = !_isLoginForm;
     });
   }
-  var maskTextInputFormatter = MaskTextInputFormatter(mask: "AAA-#-####-#/####", filter: { "#": RegExp(r'[0-9]'), "A": RegExp(r'[^A-Z]') });
+  var maskTextInputFormatter = MaskTextInputFormatter(mask: "AAA-#-####-#/yyyy", filter: { "#": RegExp(r'[0-9]'), "A": RegExp(r'[A-Za-z]'), "y": RegExp (r'[0-9]|[0-9][0-9]|[0-9][0-9][0-9]|1[0-9][0-9][0-9]|20[0-1][0-8]|201[0-8]') });
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: Colors.white,
+          label: new Text('ADMIN / STAFF LOGIN', style: TextStyle(fontSize: 20, color: Colors.pink[900]),),
+          //Widget to display inside Floating Action Button, can be `Text`, `Icon` or any widget.
+          onPressed: () {
+            Navigator.of(context).push(new CupertinoPageRoute(
+              builder: (BuildContext context) => new Staff()
+          ));
+            },
+        ),
         body: Stack(
           children: <Widget>[
             new Container(
@@ -172,8 +186,9 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
                 ),
               ),
             ),
-            _showForm(),
+            MediaQuery.of(context).orientation == Orientation.landscape  ? new Offstage():_showForm(),
             _showCircularProgress(),
+
           ],
         ));
   }
@@ -250,26 +265,10 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
                         color: Colors.grey,
                       )),
                   inputFormatters: [maskTextInputFormatter],
+                  textCapitalization: TextCapitalization.characters,
                   autocorrect: false,
                   validator: (value) => value.isEmpty ? 'Field can\'t be empty' : null,
                   onSaved: (value) => _reg = value.trim(),
-                ),
-              ),
-              _isLoginForm ? new Offstage():
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
-                child: new TextFormField(
-                  maxLines: 1,
-                  autofocus: false,
-                  decoration: new InputDecoration(
-                      hintText: 'Image Url',
-                      icon: new Icon(
-                        Icons.image,
-                        color: Colors.grey,
-                      )),
-                  autocorrect: false,
-                  validator: (value) => value.isEmpty ? 'Field can\'t be empty' : null,
-                  onSaved: (value) => _profImage = value.trim(),
                 ),
               ),
               showEmailInput(),
@@ -277,7 +276,6 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               showPrimaryButton(),
               showSecondaryButton(),
               showErrorMessage(),
-              staffLogin()
             ],
           ),
         ));
@@ -465,9 +463,15 @@ class _StaffState extends State<Staff> {
 
 
 
-          if(id == "staff") {
+          if(id == "academics") {
             Navigator.of(context).push(new CupertinoPageRoute(
-                builder: (BuildContext context) => new Events()
+                builder: (BuildContext context) => new Academics()
+            ));
+
+          }
+          if(id == "finance") {
+            Navigator.of(context).push(new CupertinoPageRoute(
+                builder: (BuildContext context) => new finance()
             ));
 
           }

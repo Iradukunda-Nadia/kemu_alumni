@@ -56,6 +56,7 @@ class _ContributionsState extends State<Contributions> {
         "email": user.email,
         "transaction ": transactionInitialisation.toString(),
         "status": "KeMU AA ccontribution",
+        "event": "General contribution",
         "amount": payment,
         "date" : DateFormat(' dd MMM yyyy').format(now),
       })

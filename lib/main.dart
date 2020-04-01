@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
 import 'package:kemu_alumni/loginUI/root.dart';
 import 'mpesa/mpesa_flutter_plugin.dart';
 
+
 void main(){
   MpesaFlutterPlugin.setConsumerKey('hwjt1AQ4c7lRDexArlWwgtjfQYlraMMO');
   MpesaFlutterPlugin.setConsumerSecret('fauvPwIHPhGmUl3E');
-
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown,DeviceOrientation.portraitUp]);
   runApp(new MyApp());
 }
 

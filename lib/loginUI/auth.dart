@@ -44,7 +44,7 @@ class Auth implements BaseAuth {
       "id": user.uid,
       "userName": userName,
       "reg": reg,
-      "img": profImage,
+      "img": "",
       "token": fcmToken,
       "status": "pending",
     });

@@ -1,26 +1,29 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kemu_alumni/adminUI/addEvent.dart';
-import 'package:kemu_alumni/adminUI/addNews.dart';
-import 'package:kemu_alumni/events.dart';
-import 'package:kemu_alumni/loginUI/adminSide/appUsers.dart';
-import 'package:kemu_alumni/loginUI/adminSide/courses.dart';
-import 'package:kemu_alumni/loginUI/adminSide/elect.dart';
 import 'package:kemu_alumni/loginUI/adminSide/funds.dart';
-import 'package:kemu_alumni/loginUI/adminSide/userSections.dart';
+import 'package:kemu_alumni/loginUI/auth.dart';
 import 'package:kemu_alumni/loginUI/background.dart';
+import 'package:kemu_alumni/loginUI/home.dart';
 import 'package:kemu_alumni/loginUI/root.dart';
 
-import 'loginUI/auth.dart';
-import 'loginUI/home.dart';
+import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
+import 'package:printing/printing.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pdf;
+import 'package:path_provider/path_provider.dart';
 
-class Dashboard extends StatefulWidget {
+
+class finance extends StatefulWidget {
   @override
-  _DashboardState createState() => _DashboardState();
+  _financeState createState() => _financeState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _financeState extends State<finance> {
   bool isLoggedIn = false;
 
 
@@ -47,7 +50,7 @@ class _DashboardState extends State<Dashboard> {
                 top: 100,
                 left: 0,
                 right: 0,
-                child: Text("Admin",
+                child: Text("Finance",
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
@@ -115,25 +118,24 @@ class _DashboardState extends State<Dashboard> {
           Expanded(
             child: Column(
               children: <Widget>[
-                GridView.count(
-                  crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait ? 2 : 4,
-                  shrinkWrap: true,
-                  padding: EdgeInsets.all(16.0),
-                  childAspectRatio: 9.0 / 9.0,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new userSections()));
-                      },
-                      child: Card(
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 10,
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).push(FadeRouteBuilder(page: new Funds()));
+                    },
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 10,
+                      child: Container(
+                        width: 200,
+                        height: 200.0,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             AspectRatio(
                                 aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.group, size: 50.0, color: Colors.pink[900],)
+                                child: Icon(Icons.attach_money, size: 50.0, color: Colors.pink[900],)
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
@@ -141,7 +143,7 @@ class _DashboardState extends State<Dashboard> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('Users', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
+                                    Text('Funds', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
                                   ],
                                 ),
@@ -151,104 +153,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                     ),
-
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new EventsList()));
-                      },
-                      child: Card(
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 10,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            AspectRatio(
-                                aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.assignment, size: 50.0, color: Colors.pink[900],)
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
-                              child: Center(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text('Events', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
-
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new Elect()));
-                      },
-                      child: Card(
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 10,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            AspectRatio(
-                                aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.group_add, size: 50.0, color: Colors.pink[900],)
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
-                              child: Center(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text('Elections', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
-
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new NewsList()));
-                      },
-                      child: Card(
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 10,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            AspectRatio(
-                                aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.mail, size: 50.0, color: Colors.pink[900],)
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
-                              child: Center(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text('News', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
-
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-
-
-
-                  ],// Replace
+                  ),
                 ),
               ],
             ),

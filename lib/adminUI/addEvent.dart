@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class EventsList extends StatefulWidget {
   @override
@@ -8,6 +9,7 @@ class EventsList extends StatefulWidget {
 }
 
 class _EventsListState extends State<EventsList> {
+  TextEditingController dateCtl = TextEditingController();
   final db = Firestore.instance;
   @override
   Widget build(BuildContext context) {
@@ -49,61 +51,7 @@ class _EventsListState extends State<EventsList> {
                           leading: Image.network(doc.data["image"]),
                           title: Text("${doc.data["title"]}"),
                           subtitle: Text("${doc.data["date"]}"),
-                          trailing: RaisedButton(
-                            color: Colors.pink[900],
-                            onPressed: () async {
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text("Delete this Event"),
-                                      content: Text("Are you sure??"),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                          child: Text("Yes"),
-                                          onPressed: () async {
-                                            await db
-                                                .collection('events')
-                                                .document(doc.documentID)
-                                                .delete();
-                                            Navigator.of(context).pop();
-                                            showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: Text("Deleted"),
-                                                    content: Text("Stand deleted from database"),
-                                                    actions: <Widget>[
-                                                      FlatButton(
-                                                        child: Text("Close"),
-                                                        onPressed: () {
-                                                          Navigator.of(context).pop();
-                                                        },
-                                                      )
-                                                    ],
-                                                  );
-                                                });
-                                          },
-                                        ),
-                                        FlatButton(
-                                          child: Text("No"),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        )
-                                      ],
-                                    );
-                                  });
-
-                            },
-                            child: new Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                new Text('Delete',style: TextStyle(color: Colors.white),),
-                              ],
-                            ),
-                          ),
+                          trailing: new Icon(Icons.arrow_forward_ios),
                         ),
                       );
                     }).toList(),
@@ -155,7 +103,7 @@ class _addEventState extends State<addEvent> {
 
       await reference.add({
         'title': _name,
-        'date': _date,
+        'date': dateCtl,
         'image': _img,
       });
     }).then((result) =>
@@ -187,6 +135,7 @@ class _addEventState extends State<addEvent> {
       },
     );
   }
+  TextEditingController dateCtl = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -239,23 +188,21 @@ class _addEventState extends State<addEvent> {
                             padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
                             child: Container(
                               child: TextFormField(
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontFamily: 'SFUIDisplay'
-                                ),
+                                controller: dateCtl,
                                 decoration: InputDecoration(
-                                    errorStyle: TextStyle(color: Colors.red),
-                                    filled: true,
-                                    fillColor: Colors.white.withOpacity(0.1),
-                                    labelText: 'Event Date',
-                                    labelStyle: TextStyle(
-                                        fontSize: 11
-                                    )
-                                ),
-                                validator: (val) =>
-                                val.isEmpty  ? null : null,
-                                onSaved: (val) => _date = val,
-                              ),
+                                  labelText: "Date",
+                                  hintText: "Enter Date",),
+                                onTap: () async{
+                                  DateTime date = DateTime(1900);
+                                  FocusScope.of(context).requestFocus(new FocusNode());
+
+                                  date = await showDatePicker(
+                                      context: context,
+                                      initialDate:DateTime.now(),
+                                      firstDate:DateTime(1900),
+                                      lastDate: DateTime(2100));
+
+                                  dateCtl.text = DateFormat(' dd MMM yyyy').format(date);},),
                             ),
                           ),
                           Padding(
@@ -334,17 +281,46 @@ class eventReserves extends StatefulWidget {
     this.eventDate,
     this.eventID,
   });
-
   @override
   _eventReservesState createState() => _eventReservesState();
 }
 
 class _eventReservesState extends State<eventReserves> {
+  final db = Firestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("RSVP's"),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.pink[900],
+        label: new Text('Delete Event', style: TextStyle(fontSize: 20),),
+        //Widget to display inside Floating Action Button, can be `Text`, `Icon` or any widget.
+        onPressed: () async {
+          await db
+              .collection('events')
+              .document(widget.eventID)
+              .delete();
+          Navigator.of(context).pop();
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Deleted"),
+                  content: Text("Stand deleted from database"),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text("Close"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              });
+        },
       ),
       body: Column(
         children: <Widget>[

@@ -32,10 +32,10 @@ class _approvedUserState extends State<approvedUser> {
                             ),
                             title: Text(doc.data['name'], style: TextStyle(fontSize: 12),),
                             trailing: Container(
-                              width: 60,
-                              height: 20,
+                              width: MediaQuery.of(context).orientation == Orientation.portrait ? 60 : 100,
+                              height: MediaQuery.of(context).orientation == Orientation.portrait ? 20 : 40,
                               child: RaisedButton(
-                                  child: Text("Suspend",style: TextStyle(fontSize: 6 , color: Colors.white),
+                                  child: Text("Suspend",style: TextStyle(fontSize: MediaQuery.of(context).orientation == Orientation.portrait ? 6 : 14, color: Colors.white),
 
                                   ),
                                   color: Colors.pink[900],

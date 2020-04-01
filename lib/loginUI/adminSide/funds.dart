@@ -3,12 +3,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:flutter/rendering.dart';
+import 'package:printing/printing.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pdf;
+import 'package:path_provider/path_provider.dart';
+
 class Funds extends StatefulWidget {
   @override
   _FundsState createState() => _FundsState();
 }
 
 class _FundsState extends State<Funds> {
+  final _renderObjectKey = GlobalKey<ScaffoldState>();
   FirebaseUser user;
   FirebaseAuth _auth;
 
@@ -82,11 +93,45 @@ class _FundsState extends State<Funds> {
 
   final formatCurrency = new NumberFormat.simpleCurrency();
 
+  Future<void> _printScreen() async {
+    final RenderRepaintBoundary boundary =
+    _renderObjectKey.currentContext.findRenderObject();
+    final ui.Image im = await boundary.toImage();
+    final ByteData bytes =
+    await im.toByteData(format: ui.ImageByteFormat.rawRgba);
+    print('Print Screen ${im.width}x${im.height} ...');
+
+
+
+    final bool result =
+    await Printing.layoutPdf(onLayout: (PdfPageFormat format) {
+      final pdf.Document document = pdf.Document();
+
+      final PdfImage image = PdfImage(document.document,
+          image: bytes.buffer.asUint8List(),
+          width: im.width,
+          height: im.height);
+
+      document.addPage(pdf.Page(
+          pageFormat: format,
+          build: (pdf.Context context) {
+            return pdf.Center(
+              child: pdf.Expanded(
+                child: pdf.Image(image),
+              ),
+            ); // Center
+          })); // Page
+
+      return document.save();
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Contributions"),
+        title: Text('TOTAL: KSH.${formatCurrency.format(newTotal)}', style: TextStyle(fontSize: 20),),
         centerTitle: true,
         backgroundColor: Colors.pink[900],
       ),
@@ -94,60 +139,45 @@ class _FundsState extends State<Funds> {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.pink[900],
         icon: Icon(Icons.attach_money),
-        label: new Text('TOTAL: KSH.${formatCurrency.format(newTotal)}', style: TextStyle(fontSize: 20),),
+        label: new Text('print report', style: TextStyle(fontSize: 20),),
         //Widget to display inside Floating Action Button, can be `Text`, `Icon` or any widget.
-        onPressed: () {},
+        onPressed: () {_printScreen();},
       ),
-      body: Container(
+      body: RepaintBoundary(
+        key: _renderObjectKey,
         child: StreamBuilder<QuerySnapshot>(
             stream: collectionReference.orderBy("date", descending: true).snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Column(
+                return ListView(
                   children: snapshot.data.documents.map((doc) {
-                    return new GestureDetector(
-                      onTap: (){},
-                      child: new Card(
-                        child: Stack(
-                          alignment: FractionalOffset.topLeft,
-                          children: <Widget>[
-                            new Stack(
-                              alignment: FractionalOffset.bottomCenter,
-                              children: <Widget>[
-
-                                new Container(
-                                  height:100.0 ,
-                                  color: Colors.transparent,
-                                  child: new Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child:  new ListTile(
-                                      leading: new CircleAvatar(
-                                        child: new Icon(Icons.attach_money,
-                                          color: Colors.white,
-                                          size: 20.0,
-                                        ),
-                                      ),
-                                      title: new Text("KSH. ${doc.data["amount"]}"),
-                                      subtitle: new Text("By: ${doc.data["email"]}"),
-
-
-                                    ),
-                                  ),
-                                ),
-                              ],
+                    return Column(
+                      children: <Widget>[
+                        new ListTile(
+                          leading: new CircleAvatar(
+                            child: new Icon(Icons.attach_money,
+                              color: Colors.white,
+                              size: 20.0,
                             ),
+                          ),
+                          title: new Text("KSH. ${doc.data["amount"]}"),
+                          subtitle: new Text("By: ${doc.data["email"]}.  \nDate: ${doc.data["date"]}."),
+                          isThreeLine: true,
 
-                          ],
+
                         ),
-                      ),
+                    Divider(),
+                      ],
                     );
+
+
+
                   }).toList(),
                 );
               } else {
                 return SizedBox();
               }
             }),
-
       ),
     );
   }

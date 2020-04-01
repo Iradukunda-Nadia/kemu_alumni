@@ -1,26 +1,19 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/adminUI/addEvent.dart';
 import 'package:kemu_alumni/adminUI/addNews.dart';
-import 'package:kemu_alumni/events.dart';
-import 'package:kemu_alumni/loginUI/adminSide/appUsers.dart';
 import 'package:kemu_alumni/loginUI/adminSide/courses.dart';
-import 'package:kemu_alumni/loginUI/adminSide/elect.dart';
-import 'package:kemu_alumni/loginUI/adminSide/funds.dart';
-import 'package:kemu_alumni/loginUI/adminSide/userSections.dart';
+import 'package:kemu_alumni/loginUI/auth.dart';
 import 'package:kemu_alumni/loginUI/background.dart';
+import 'package:kemu_alumni/loginUI/home.dart';
 import 'package:kemu_alumni/loginUI/root.dart';
 
-import 'loginUI/auth.dart';
-import 'loginUI/home.dart';
-
-class Dashboard extends StatefulWidget {
+class Academics extends StatefulWidget {
   @override
-  _DashboardState createState() => _DashboardState();
+  _AcademicsState createState() => _AcademicsState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _AcademicsState extends State<Academics> {
   bool isLoggedIn = false;
 
 
@@ -47,7 +40,7 @@ class _DashboardState extends State<Dashboard> {
                 top: 100,
                 left: 0,
                 right: 0,
-                child: Text("Admin",
+                child: Text("Academics",
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
@@ -116,41 +109,12 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               children: <Widget>[
                 GridView.count(
-                  crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait ? 2 : 4,
+                  crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait ? 3 : 3,
                   shrinkWrap: true,
                   padding: EdgeInsets.all(16.0),
                   childAspectRatio: 9.0 / 9.0,
                   children: <Widget>[
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new userSections()));
-                      },
-                      child: Card(
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 10,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            AspectRatio(
-                                aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.group, size: 50.0, color: Colors.pink[900],)
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
-                              child: Center(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text('Users', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
 
                     GestureDetector(
                       onTap: (){
@@ -183,36 +147,6 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ),
 
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new Elect()));
-                      },
-                      child: Card(
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 10,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            AspectRatio(
-                                aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.group_add, size: 50.0, color: Colors.pink[900],)
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
-                              child: Center(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text('Elections', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
-
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
 
                     GestureDetector(
                       onTap: (){
@@ -244,7 +178,36 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                     ),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.of(context).push(FadeRouteBuilder(page: new Courses()));
+                      },
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        elevation: 10,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            AspectRatio(
+                                aspectRatio: 18.0 / 11.0,
+                                child: Icon(Icons.school, size: 50.0, color: Colors.pink[900],)
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
+                              child: Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text('Courses', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
 
 

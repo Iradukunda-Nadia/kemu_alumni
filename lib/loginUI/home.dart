@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
             child: Padding(
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: SingleChildScrollView(
-                child: GridView.count(crossAxisCount: 2,
+                child: GridView.count(crossAxisCount: MediaQuery.of(context).orientation == Orientation.portrait ? 2 : 6,
                   shrinkWrap: true,
                   padding: EdgeInsets.all(16.0),
                   childAspectRatio: 9.0 / 9.0,
