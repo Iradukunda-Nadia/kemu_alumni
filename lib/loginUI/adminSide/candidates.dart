@@ -304,7 +304,7 @@ class _regDetailState extends State<regDetail> {
                               child: Text("Yes"),
                               onPressed: () async{
                                 await Firestore.instance
-                                    .collection('users')
+                                    .collection(DateFormat('MMM yyyy').format(DateTime.now()))
                                     .document(widget.docID)
                                     .updateData({
                                   'status': "approved",
