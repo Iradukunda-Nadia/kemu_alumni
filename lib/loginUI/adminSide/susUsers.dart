@@ -30,6 +30,8 @@ class _SuspendedState extends State<Suspended> {
                               child: new Icon(Icons.person),
                             ),
                             title: Text(doc.data['name'], style: TextStyle(fontSize: MediaQuery.of(context).orientation == Orientation.portrait ? 12 : 20),),
+                            subtitle: Text("Reason:${doc.data['reason']}", style: TextStyle(fontSize: MediaQuery.of(context).orientation == Orientation.portrait ? 12 : 20),),
+
                             trailing: Container(
                               width: MediaQuery.of(context).orientation == Orientation.portrait ? 60 : 100,
                               height: MediaQuery.of(context).orientation == Orientation.portrait ? 20 : 40,

@@ -1,57 +1,91 @@
+
+import 'dart:io';
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:kemu_alumni/tabs.dart';
 import 'package:kemu_alumni/voting.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'loginUI/home.dart';
 
 
-class VotingHomePage extends StatelessWidget  {
-  const VotingHomePage ({this.title}) :super();
-  final String title;
+class VotingHomePage extends StatefulWidget {
+  @override
+  _VotingHomePageState createState() => _VotingHomePageState();
+}
 
+class _VotingHomePageState extends State<VotingHomePage> {
+  String state;
+  String edate ;
+  String currDate = DateFormat('MMM yyyy').format(DateTime.now());
 
+  _voterCheck() async {
+    var collectionReference = Firestore.instance.collection('emonth');
+    var query = collectionReference;
+    query.getDocuments().then((querySnapshot) {
+      if (querySnapshot.documents.length > 0) {
+        querySnapshot.documents.forEach((document)
+        async {
+          setState(() {
+            edate = "${document['date']} ${DateFormat('yyyy').format(DateTime.now())}";
 
-  Widget _buildListItem(BuildContext context,DocumentSnapshot document){
-    return ListTile(
-      title: Row(
-        children: <Widget>[
-          Expanded(
-            child: Text(
-              document['name'],
-              style: Theme.of(context).textTheme.headline,
-            ),
-          ),
-          Container(
-            decoration: const BoxDecoration(
-              color: Color(0xffdddff),
-            ),
-            padding: const EdgeInsets.all(10.0),
-            child: Text(
-              document['votes'].toString(),
-              style: Theme.of(context).textTheme.display1,
-            ),
-          )
-        ],
-      ),
-      onTap: (){
-        Firestore.instance.runTransaction((transaction) async{
-          DocumentSnapshot freshData = await transaction.get(document.reference);
-          await transaction.update(freshData.reference, {
-            'votes':freshData['votes']+1,
           });
-        });
 
-      },
-    );
+
+          if( edate == currDate ) {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                // return object of type Dialog
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: AlertDialog(
+                    title: new Text("ELECTIONS ARE CURRENTLY CLOSED"),
+                    content: new Text("Elections are only held in APRIL of every year"),
+                    actions: <Widget>[
+                      // usually buttons at the bottom of the dialog
+                      new FlatButton(
+                        child: new Text("BACK"),
+                        onPressed: () {
+                          Navigator.of(context).push(new CupertinoPageRoute(
+                              builder: (BuildContext context) => new tabView()
+                          ));
+
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
+
+        });
+      }
+    });
   }
 
+
+  String email;
+
+  @override
+  initState() {
+    // TODO: implement initState
+    super.initState();
+    _voterCheck();
+  }
 
 
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: FloatingActionButton.extended(
@@ -242,6 +276,7 @@ class VotingHomePage extends StatelessWidget  {
 
 }
 
+
 class regCand extends StatefulWidget {
   @override
   _regCandState createState() => _regCandState();
@@ -258,6 +293,9 @@ class _regCandState extends State<regCand> {
   String name;
   String location;
   DateTime now = DateTime.now();
+  File selectedFile;
+  bool _isLoading = false;
+
   void _submitCommand() {
     //get state of our Form
     final form = formKey.currentState;
@@ -275,40 +313,52 @@ class _regCandState extends State<regCand> {
   }
 
   _AddData() async {
-    final form = formKey.currentState;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child(fileCtr.text);
+    StorageUploadTask upload = firebaseStorageRef.putFile(selectedFile,);
+    StorageTaskSnapshot taskSnapshot=await upload.onComplete;
+    String fileUrl= await taskSnapshot.ref.getDownloadURL();
 
     Firestore.instance.runTransaction((Transaction transaction) async {
-      CollectionReference reference = Firestore.instance.collection('candidates');
+      CollectionReference reference = Firestore.instance.collection(DateFormat('MMM yyyy').format(DateTime.now()));
 
       await reference.add({
         'cat': Item,
-        'date': DateTime.now(),
+        'date': DateFormat(' dd MMM yyyy').format(DateTime.now()),
         'req': _requirements,
         'name': name,
         "status": "pending",
         'votes': 0,
+        'cv': fileUrl,
 
       });
-    }).then((result) =>
+    });
+    setState(() {
+      _isLoading = false;
+    });
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          content: new Text("You have been Registered"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
 
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            // return object of type Dialog
-            return AlertDialog(
-              content: new Text("You have been Registered"),
-              actions: <Widget>[
-                // usually buttons at the bottom of the dialog
-                new FlatButton(
-                  child: new Text("close"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        ));
   }
 
 
@@ -350,8 +400,34 @@ class _regCandState extends State<regCand> {
 
   String selectedItem;
   String Item;
+  String _filePath;
 
+  void getFilePath() async {
+    try {
+      String filePath = await FilePicker.getFilePath();
+      if (filePath == '') {
+        return;
+      }
+      print("File path: " + filePath);
+      setState((){fileCtr.text = filePath;});
+    } on PlatformException catch (e) {
+      print("Error while picking the file: " + e.toString());
+    }
+  }
 
+  Future getPdfAndUpload()async{
+
+    File file = await FilePicker.getFile();
+    String fileName = file.path.split('/').last;
+    print(fileName);
+    setState((){
+      fileCtr.text = fileName;
+      selectedFile = file;
+    });
+
+  }
+
+  TextEditingController fileCtr = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -435,6 +511,44 @@ class _regCandState extends State<regCand> {
                             ),
                           ),
                           Padding(
+                            padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
+                            child: Container(
+                              child: TextFormField(
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'SFUIDisplay'
+                                ),
+                                textInputAction: TextInputAction.newline,
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                controller: fileCtr,
+                                  showCursor: false,
+                                  readOnly: true,
+
+                                decoration: InputDecoration(
+                                    errorStyle: TextStyle(color: Colors.red),
+                                    filled: true,
+                                    hintText: "pick a file",
+                                    fillColor: Colors.white.withOpacity(0.1),
+                                    labelText: 'CV',
+                                    labelStyle: TextStyle(
+                                        fontSize: 11
+                                    ),
+                                  suffixIcon: IconButton(
+                                    onPressed: (){
+                                      getPdfAndUpload();
+
+                                    },
+                                    icon: Icon(
+                                      Icons.attach_file,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
                             padding: EdgeInsets.fromLTRB(70, 10, 70, 0),
                             child: MaterialButton(
                               onPressed: _submitCommand,
@@ -456,8 +570,7 @@ class _regCandState extends State<regCand> {
                             ),
                           ),
 
-
-
+                          _showCircularProgress(),
 
                         ],
                       ),
@@ -470,6 +583,16 @@ class _regCandState extends State<regCand> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _showCircularProgress() {
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return Container(
+      height: 0.0,
+      width: 0.0,
     );
   }
 }

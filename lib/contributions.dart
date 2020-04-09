@@ -5,6 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'mpesa/mpesa_flutter_plugin.dart';
 
+import 'package:flutter/rendering.dart';
+import 'package:printing/printing.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pdf;
+import 'package:path_provider/path_provider.dart';
+
 class Contributions extends StatefulWidget {
   @override
   _ContributionsState createState() => _ContributionsState();
@@ -496,67 +506,76 @@ class _ReceiptsState extends State<Receipts> {
         backgroundColor: Colors.pink[900],
       ),
 
-      body: Container(
-        child: StreamBuilder<QuerySnapshot>(
-            stream: collectionReference.where("email", isEqualTo:
-            email).snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Column(
-                  children: snapshot.data.documents.map((doc) {
-                    return new GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> new ReceiptDetail(
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+                stream: collectionReference.where("email", isEqualTo:
+                email).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView(
+                      shrinkWrap: true,
+                      children: <Widget>[
+                        Column(
+                          children: snapshot.data.documents.map((doc) {
+                            return new GestureDetector(
+                              onTap: (){
+                                Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> new ReceiptDetail(
 
-                          itemEmail: doc.data["email"],
-                          itemStatus: doc.data["status"],
-                          itemDate: doc.data["date"].toString().substring(0,10),
-                          itemAmount: doc.data["amount"],
+                                  itemEmail: doc.data["email"],
+                                  itemStatus: doc.data["status"],
+                                  itemDate: doc.data["date"].toString().substring(0,10),
+                                  itemAmount: doc.data["amount"],
 
 
-                        )));
-                      },
-                      child: new Card(
-                        child: Stack(
-                          alignment: FractionalOffset.topLeft,
-                          children: <Widget>[
-                            new Stack(
-                              alignment: FractionalOffset.bottomCenter,
-                              children: <Widget>[
+                                )));
+                              },
+                              child: new Card(
+                                child: Stack(
+                                  alignment: FractionalOffset.topLeft,
+                                  children: <Widget>[
+                                    new Stack(
+                                      alignment: FractionalOffset.bottomCenter,
+                                      children: <Widget>[
 
-                                new Container(
-                                  height:100.0 ,
-                                  color: Colors.transparent,
-                                  child: new Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child:  new ListTile(
-                                      leading: new CircleAvatar(
-                                        child: new Icon(Icons.attach_money,
-                                          color: Colors.white,
-                                          size: 20.0,
+                                        new Container(
+                                          height:100.0 ,
+                                          color: Colors.transparent,
+                                          child: new Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child:  new ListTile(
+                                              leading: new CircleAvatar(
+                                                child: new Icon(Icons.attach_money,
+                                                  color: Colors.white,
+                                                  size: 20.0,
+                                                ),
+                                              ),
+                                              title: new Text("KSH. ${doc.data["amount"]}"),
+                                              subtitle: new Text("Transaction date: ${doc.data["date"]}"),
+
+
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      title: new Text("KSH. ${doc.data["amount"]}"),
-                                      subtitle: new Text("Transaction date: ${doc.data["date"]}"),
-
-
+                                      ],
                                     ),
-                                  ),
+
+                                  ],
                                 ),
-                              ],
-                            ),
-
-                          ],
+                              ),
+                            );
+                          }).toList(),
                         ),
-                      ),
+                      ],
                     );
-                  }).toList(),
-                );
-              } else {
-                return SizedBox();
-              }
-            }),
-
+                  } else {
+                    return SizedBox();
+                  }
+                }),
+          ),
+        ],
       ),
     );
 
@@ -590,6 +609,41 @@ class ReceiptDetail extends StatefulWidget {
 }
 
 class _ReceiptDetailState extends State<ReceiptDetail> {
+  final _renderObjectKey = GlobalKey<ScaffoldState>();
+  Future<void> _printScreen() async {
+    final RenderRepaintBoundary boundary =
+    _renderObjectKey.currentContext.findRenderObject();
+    final ui.Image im = await boundary.toImage();
+    final ByteData bytes =
+    await im.toByteData(format: ui.ImageByteFormat.rawRgba);
+    print('Print Screen ${im.width}x${im.height} ...');
+
+
+
+    final bool result =
+    await Printing.layoutPdf(onLayout: (PdfPageFormat format) {
+      final pdf.Document document = pdf.Document();
+
+      final PdfImage image = PdfImage(document.document,
+          image: bytes.buffer.asUint8List(),
+          width: im.width,
+          height: im.height);
+
+      document.addPage(pdf.Page(
+          pageFormat: format,
+          build: (pdf.Context context) {
+            return pdf.Center(
+              child: pdf.Expanded(
+                child: pdf.Image(image),
+              ),
+            ); // Center
+          })); // Page
+
+      return document.save();
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -599,7 +653,13 @@ class _ReceiptDetailState extends State<ReceiptDetail> {
         title: new Text("Item Detail"),
         centerTitle: false,
       ),
-
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.pink[900],
+        label: new Text('print receipt', style: TextStyle(fontSize: 20),),
+        //Widget to display inside Floating Action Button, can be `Text`, `Icon` or any widget.
+        onPressed: () {_printScreen();},
+      ),
       body: new Stack(
         alignment: Alignment.topCenter,
         children: <Widget>[
@@ -645,141 +705,144 @@ class _ReceiptDetailState extends State<ReceiptDetail> {
                     ),
                   ),
                 ),
-                new Card(
-                  child: new Container(
-                    width: screenSize.width,
-                    margin: new EdgeInsets.only(left: 20.0, right: 20.0),
-                    child: new Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
+                RepaintBoundary(
+                  key: _renderObjectKey,
+                  child: new Card(
+                    child: new Container(
+                      width: screenSize.width,
+                      margin: new EdgeInsets.only(left: 20.0, right: 20.0),
+                      child: new Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
 
 
 
 
-                        new SizedBox(
-                          height: 10.0,
-                        ),
+                          new SizedBox(
+                            height: 10.0,
+                          ),
 
-                        new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            new Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                new SizedBox(
-                                  width: 5.0,
-                                ),
-                                new Text(
-                                  "Amount",
-                                  style: new TextStyle(color: Colors.black, fontSize: 18.0,),
-                                )
-                              ],
-                            ),
-                            new Text(
-                              "KSH. ${widget.itemAmount}",
-                              style: new TextStyle(
-                                  fontSize: 14.0,
-                                  color: Colors.pink[900],
-                                  fontWeight: FontWeight.w700),
-                            ),
-                          ],
-                        ),
-
-
-                        new SizedBox(
-                          height: 10.0,
-                        ),
-
-                        new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            new Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                new SizedBox(
-                                  width: 5.0,
-                                ),
-                                new Text(
-                                  "Status",
-                                  style: new TextStyle(color: Colors.black, fontSize: 18.0,),
-                                )
-                              ],
-                            ),
-                            new Text(
-                              widget.itemStatus,
-                              style: new TextStyle(
-                                  fontSize: 14.0,
-                                  color: Colors.pink[900],
-                                  fontWeight: FontWeight.w700),
-                            ),
-                          ],
-                        ),
+                          new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              new Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  new SizedBox(
+                                    width: 5.0,
+                                  ),
+                                  new Text(
+                                    "Amount",
+                                    style: new TextStyle(color: Colors.black, fontSize: 18.0,),
+                                  )
+                                ],
+                              ),
+                              new Text(
+                                "KSH. ${widget.itemAmount}",
+                                style: new TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.pink[900],
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                          ),
 
 
-                        new SizedBox(
-                          height: 10.0,
-                        ),
+                          new SizedBox(
+                            height: 10.0,
+                          ),
 
-                        new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            new Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                new SizedBox(
-                                  width: 5.0,
-                                ),
-                                new Text(
-                                  "Date",
-                                  style: new TextStyle(color: Colors.black, fontSize: 18.0,),
-                                )
-                              ],
-                            ),
-                            new Text(
-                              widget.itemDate,
-                              style: new TextStyle(
-                                  fontSize: 14.0,
-                                  color: Colors.pink[900],
-                                  fontWeight: FontWeight.w700),
-                            ),
-                          ],
-                        ),
-
-
-                        new SizedBox(
-                          height: 10.0,
-                        ),
-
-                        new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            new Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                new SizedBox(
-                                  width: 5.0,
-                                ),
-                                new Text(
-                                  "Email",
-                                  style: new TextStyle(color: Colors.black, fontSize: 18.0,),
-                                )
-                              ],
-                            ),
-                            new Text(
-                              widget.itemEmail,
-                              style: new TextStyle(
-                                  fontSize: 14.0,
-                                  color: Colors.pink[900],
-                                  fontWeight: FontWeight.w700),
-                            ),
-                          ],
-                        ),
+                          new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              new Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  new SizedBox(
+                                    width: 5.0,
+                                  ),
+                                  new Text(
+                                    "Status",
+                                    style: new TextStyle(color: Colors.black, fontSize: 18.0,),
+                                  )
+                                ],
+                              ),
+                              new Text(
+                                widget.itemStatus,
+                                style: new TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.pink[900],
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                          ),
 
 
-                        new SizedBox(
-                          height: 10.0,
-                        ),
-                      ],
+                          new SizedBox(
+                            height: 10.0,
+                          ),
+
+                          new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              new Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  new SizedBox(
+                                    width: 5.0,
+                                  ),
+                                  new Text(
+                                    "Date",
+                                    style: new TextStyle(color: Colors.black, fontSize: 18.0,),
+                                  )
+                                ],
+                              ),
+                              new Text(
+                                widget.itemDate,
+                                style: new TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.pink[900],
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                          ),
+
+
+                          new SizedBox(
+                            height: 10.0,
+                          ),
+
+                          new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              new Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  new SizedBox(
+                                    width: 5.0,
+                                  ),
+                                  new Text(
+                                    "Email",
+                                    style: new TextStyle(color: Colors.black, fontSize: 18.0,),
+                                  )
+                                ],
+                              ),
+                              new Text(
+                                widget.itemEmail,
+                                style: new TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.pink[900],
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            ],
+                          ),
+
+
+                          new SizedBox(
+                            height: 10.0,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

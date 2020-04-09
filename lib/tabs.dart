@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:kemu_alumni/chat.dart';
 import 'package:kemu_alumni/contributions.dart';
 import 'package:kemu_alumni/events.dart';
+import 'package:kemu_alumni/help.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
 import 'package:kemu_alumni/profile.dart';
 import 'package:kemu_alumni/rsvp.dart';
@@ -251,10 +252,20 @@ class _tabViewState extends State<tabView> with SingleTickerProviderStateMixin {
             new Divider(),
             new ListTile(
               leading: new Icon(Icons.monetization_on),
-              title: new Text("My Contributions"),
+              title: new Text("Receipts"),
               onTap: (){
                 Navigator.of(context).push(new CupertinoPageRoute(
                     builder: (BuildContext context) => new Receipts()
+                ));
+              },
+            ),
+            new Divider(),
+            new ListTile(
+              leading: new Icon(Icons.help),
+              title: new Text("Help"),
+              onTap: (){
+                Navigator.of(context).push(new CupertinoPageRoute(
+                    builder: (BuildContext context) => new Help()
                 ));
               },
             ),

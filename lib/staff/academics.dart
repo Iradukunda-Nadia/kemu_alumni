@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/adminUI/addEvent.dart';
 import 'package:kemu_alumni/adminUI/addNews.dart';
+import 'package:kemu_alumni/loginUI/adminSide/candidates.dart';
 import 'package:kemu_alumni/loginUI/adminSide/courses.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
 import 'package:kemu_alumni/loginUI/background.dart';
@@ -150,7 +151,7 @@ class _AcademicsState extends State<Academics> {
 
                     GestureDetector(
                       onTap: (){
-                        Navigator.of(context).push(FadeRouteBuilder(page: new NewsList()));
+                        Navigator.of(context).push(FadeRouteBuilder(page: new ActiveCand()));
                       },
                       child: Card(
                         clipBehavior: Clip.antiAlias,
@@ -160,15 +161,15 @@ class _AcademicsState extends State<Academics> {
                           children: <Widget>[
                             AspectRatio(
                                 aspectRatio: 18.0 / 11.0,
-                                child: Icon(Icons.mail, size: 50.0, color: Colors.pink[900],)
+                                child: Icon(Icons.group, size: 50.0, color: Colors.pink[900],)
                             ),
                             Padding(
-                              padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
+                              padding: EdgeInsets.fromLTRB(14.0, 12.0, 14.0, 8.0),
                               child: Center(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text('News', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
+                                    Text('Candidates', style: TextStyle(color: Colors.pink[900], fontWeight: FontWeight.bold),),
 
                                   ],
                                 ),

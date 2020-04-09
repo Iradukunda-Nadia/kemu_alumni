@@ -25,6 +25,17 @@ class _ScholarshipsState extends State<Scholarships> {
         title: Text("Scholarship Opportunities"),
         centerTitle: true,
         backgroundColor: Colors.pink[900],
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: ScholarshipSearchDelegate(),
+              );
+            },
+          ),
+        ],
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -604,3 +615,126 @@ class _scholarshipDetailState extends State<scholarshipDetail> {
     );
   }
 }
+
+class ScholarshipSearchDelegate extends SearchDelegate {
+  Future getUsers() async{
+    var firestore = Firestore.instance;
+    QuerySnapshot qn = await firestore.collection("scholarships").orderBy("date", descending: true).getDocuments();
+    return qn.documents;
+
+  }
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+
+  @override
+  Widget buildResults(BuildContext context) {
+    if (query.length < 3) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Center(
+            child: Text(
+              "Search term must be longer than two letters.",
+            ),
+          )
+        ],
+      );
+    }
+
+    //Add the search term to the searchBloc.
+    //The Bloc will then handle the searching and add the results to the searchResults stream.
+    //This is the equivalent of submitting the search term to whatever search service you are using
+
+    return Column(
+      children: <Widget>[
+        //Build the results based on the searchResults stream in the searchBloc
+        StreamBuilder(
+          stream: Firestore.instance.collection('scholarships').snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Center(child: CircularProgressIndicator()),
+                ],
+              );
+            } else if (snapshot.data.length == 0) {
+              return Column(
+                children: <Widget>[
+                  Text(
+                    "No Results Found.",
+                  ),
+                ],
+              );
+            } else {
+              var results = snapshot.data;
+              return ListView.builder(
+                itemCount: results.length,
+                itemBuilder: (context, index) {
+                  var result = results[index];
+                  return ListTile(
+                    title: Text(result.position),
+                  );
+                },
+              );
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return StreamBuilder(
+      stream: Firestore.instance.collection('scholarships').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return new Text('Loading...');
+
+        final results = snapshot.data.documents.where((DocumentSnapshot a) => a.data['position'].toString().contains(query));
+
+        return ListView(
+            children: results.map<Widget>((a) => ListTile(
+              leading: new Icon(Icons.arrow_right),
+              title: Text(a.data['position'].toString()),
+              onTap: (){
+                Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> new scholarshipDetail(
+
+                  company: a.data["company"],
+                  position: a.data["position"],
+                  desc: a.data["desc"],
+                  location: a.data["location"],
+                  req: a.data["req"],
+                  link: a.data["link"],
+
+
+                )));
+              },
+            )).toList()
+        );
+      },
+    );
+  }
+}
+

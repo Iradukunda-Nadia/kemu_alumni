@@ -4,11 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/admin.dart';
 import 'package:kemu_alumni/events.dart';
+import 'package:kemu_alumni/help.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
 import 'package:kemu_alumni/loginUI/background.dart';
 import 'package:kemu_alumni/staff/academics.dart';
 import 'package:kemu_alumni/staff/finance.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
+import 'adminSide/findiv.dart';
 
 class LoginSignupPage extends StatefulWidget {
   LoginSignupPage({this.auth, this.loginCallback});
@@ -158,6 +161,13 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
   var maskTextInputFormatter = MaskTextInputFormatter(mask: "AAA-#-####-#/yyyy", filter: { "#": RegExp(r'[0-9]'), "A": RegExp(r'[A-Za-z]'), "y": RegExp (r'[0-9]|[0-9][0-9]|[0-9][0-9][0-9]|1[0-9][0-9][0-9]|20[0-1][0-8]|201[0-8]') });
 
+  help() async {
+
+    Navigator.of(context).push(new CupertinoPageRoute(
+        builder: (BuildContext context) => new Help()
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -186,9 +196,48 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
                 ),
               ),
             ),
+
             MediaQuery.of(context).orientation == Orientation.landscape  ? new Offstage():_showForm(),
             _showCircularProgress(),
-
+            Positioned(
+              top: 40,
+              left: 300,
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      PopupMenuButton(
+                        icon: CircleAvatar(
+                            backgroundColor: Colors.pink[900],
+                            child: new Icon(Icons.help_outline,
+                              color: Colors.white,)),
+                        onSelected: (String value) {
+                          switch (value) {
+                            case 'help':
+                              help();
+                              break;
+                          // Other cases for other menu options
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          PopupMenuItem<String>(
+                            value: "help",
+                            child: Row(
+                              children: <Widget>[
+                                Text("HELP"),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         ));
   }
@@ -345,7 +394,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               color: Colors.grey,
             )),
         autocorrect: false,
-        validator: (value) => value.length < 6 ? 'Password should be atleast 5 characters' : null,
+        validator: (value) => value.length < 5 ? 'Password should be atleast 5 characters' : null,
         onSaved: (value) => _password = value.trim(),
       ),
     );
@@ -471,7 +520,7 @@ class _StaffState extends State<Staff> {
           }
           if(id == "finance") {
             Navigator.of(context).push(new CupertinoPageRoute(
-                builder: (BuildContext context) => new finance()
+                builder: (BuildContext context) => new fundDiv()
             ));
 
           }

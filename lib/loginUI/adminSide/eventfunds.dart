@@ -13,14 +13,18 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdf;
 import 'package:path_provider/path_provider.dart';
 
-import 'eventfunds.dart';
+class EventFundsDetail extends StatefulWidget {
+  String eventTitle;
 
-class Funds extends StatefulWidget {
+  EventFundsDetail({
+
+    this.eventTitle,
+  });
   @override
-  _FundsState createState() => _FundsState();
+  _EventFundsDetailState createState() => _EventFundsDetailState();
 }
 
-class _FundsState extends State<Funds> {
+class _EventFundsDetailState extends State<EventFundsDetail> {
   final _renderObjectKey = GlobalKey<ScaffoldState>();
   FirebaseUser user;
   FirebaseAuth _auth;
@@ -77,7 +81,7 @@ class _FundsState extends State<Funds> {
     });
   }
   Future getTotal() async {
-    Firestore.instance.collection('receipt').where("event", isEqualTo: "KeMU AA ccontribution") // new entries first, date is one the entries btw
+    Firestore.instance.collection('receipt').where("event", isEqualTo: widget.eventTitle) // new entries first, date is one the entries btw
         .snapshots()
         .listen((QuerySnapshot querySnapshot){
       querySnapshot.documents.forEach((document)
@@ -148,7 +152,7 @@ class _FundsState extends State<Funds> {
       body: RepaintBoundary(
         key: _renderObjectKey,
         child: StreamBuilder<QuerySnapshot>(
-            stream: collectionReference.orderBy("date", descending: true).where("event", isEqualTo: "KeMU AA ccontribution").snapshots(),
+            stream: collectionReference.orderBy("date", descending: true).where("event", isEqualTo: widget.eventTitle).snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView(
@@ -168,7 +172,7 @@ class _FundsState extends State<Funds> {
 
 
                         ),
-                    Divider(),
+                        Divider(),
                       ],
                     );
 
@@ -184,56 +188,3 @@ class _FundsState extends State<Funds> {
     );
   }
 }
-
-class evFunds extends StatefulWidget {
-  @override
-  _evFundsState createState() => _evFundsState();
-}
-
-class _evFundsState extends State<evFunds> {
-  TextEditingController dateCtl = TextEditingController();
-  final db = Firestore.instance;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Events"),
-        backgroundColor: Colors.pink[900],),
-      body: ListView(
-        padding: EdgeInsets.all(12.0),
-        children: <Widget>[
-          SizedBox(height: 20.0),
-          StreamBuilder<QuerySnapshot>(
-              stream: db.collection('events').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Column(
-                    children: snapshot.data.documents.map((doc) {
-                      return GestureDetector(
-                        onTap: (){
-                          Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> new EventFundsDetail(
-
-
-                            eventTitle: doc.data["title"],
-
-                          )));
-                        },
-                        child: ListTile(
-                          leading: Image.network(doc.data["image"]),
-                          title: Text("${doc.data["title"]}"),
-                          subtitle: Text("${doc.data["date"]}"),
-                          trailing: new Icon(Icons.arrow_forward_ios),
-                        ),
-                      );
-                    }).toList(),
-                  );
-                } else {
-                  return SizedBox();
-                }
-              }),
-        ],
-      ),
-    );
-  }
-}
-
-

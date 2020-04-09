@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kemu_alumni/tabs.dart';
 
 
@@ -62,15 +63,15 @@ class _voteNowState extends State<voteNow> {
     });
 
       await Firestore.instance
-          .collection('candidates')
+          .collection(DateFormat('MMM yyyy').format(DateTime.now()))
           .document(cID)
           .updateData({'votes': FieldValue.increment(1.0)});
     await Firestore.instance
-        .collection('candidates')
+        .collection(DateFormat('MMM yyyy').format(DateTime.now()))
         .document(sID)
         .updateData({'votes': FieldValue.increment(1.0)});
     await Firestore.instance
-        .collection('candidates')
+        .collection(DateFormat('MMM yyyy').format(DateTime.now()))
         .document(aID)
         .updateData({'votes': FieldValue.increment(1.0)});
 
@@ -215,7 +216,7 @@ class _voteNowState extends State<voteNow> {
                               leading: new Icon (Icons.border_color, size: 30, color: Colors.pink[900],),
                               children: <Widget>[
                                 new StreamBuilder<QuerySnapshot>(
-                                    stream: Firestore.instance.collection("candidates").where("cat", isEqualTo: "chair" ).snapshots(),
+                                    stream: Firestore.instance.collection(DateFormat('MMM yyyy').format(DateTime.now())).where("status", isEqualTo: "approved").where("cat", isEqualTo: "chair" ).snapshots(),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         return Column(
@@ -259,7 +260,7 @@ class _voteNowState extends State<voteNow> {
                               leading: new Icon (Icons.border_color, size: 30, color: Colors.pink[900],),
                               children: <Widget>[
                                 new StreamBuilder<QuerySnapshot>(
-                                    stream: Firestore.instance.collection("candidates").where("cat", isEqualTo: "assistant" ).snapshots(),
+                                    stream: Firestore.instance.collection(DateFormat('MMM yyyy').format(DateTime.now())).where("status", isEqualTo: "approved").where("cat", isEqualTo: "assistant" ).snapshots(),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         return Column(
@@ -303,7 +304,7 @@ class _voteNowState extends State<voteNow> {
                               leading: new Icon (Icons.border_color, size: 30, color: Colors.pink[900],),
                               children: <Widget>[
                                 new StreamBuilder<QuerySnapshot>(
-                                    stream: Firestore.instance.collection("candidates").where("cat", isEqualTo: "secretary" ).snapshots(),
+                                    stream: Firestore.instance.collection(DateFormat('MMM yyyy').format(DateTime.now())).where("status", isEqualTo: "approved").where("cat", isEqualTo: "secretary" ).snapshots(),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         return Column(
@@ -412,7 +413,7 @@ class _ResultsState extends State<Results> {
                               leading: new Icon (Icons.equalizer, size: 30, color: Colors.pink[900],),
                               children: <Widget>[
                                 new StreamBuilder<QuerySnapshot>(
-                                    stream: Firestore.instance.collection("candidates").where("cat", isEqualTo: "chair" ).orderBy("votes", descending: true).snapshots(),
+                                    stream: Firestore.instance.collection(DateFormat('MMM yyyy').format(DateTime.now())).where("status", isEqualTo: "approved").where("cat", isEqualTo: "chair" ).orderBy("votes", descending: true).snapshots(),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         return Column(
@@ -449,7 +450,7 @@ class _ResultsState extends State<Results> {
                               leading: new Icon (Icons.equalizer, size: 30, color: Colors.pink[900],),
                               children: <Widget>[
                                 new StreamBuilder<QuerySnapshot>(
-                                    stream: Firestore.instance.collection("candidates").where("cat", isEqualTo: "assistant" ).orderBy("votes", descending: true).snapshots(),
+                                    stream: Firestore.instance.collection(DateFormat('MMM yyyy').format(DateTime.now())).where("status", isEqualTo: "approved").where("cat", isEqualTo: "assistant" ).orderBy("votes", descending: true).snapshots(),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         return Column(
@@ -486,7 +487,7 @@ class _ResultsState extends State<Results> {
                               leading: new Icon (Icons.equalizer, size: 30, color: Colors.pink[900],),
                               children: <Widget>[
                                 new StreamBuilder<QuerySnapshot>(
-                                    stream: Firestore.instance.collection("candidates").where("cat", isEqualTo: "secretary" ).orderBy("votes", descending: true).snapshots(),
+                                    stream: Firestore.instance.collection(DateFormat('MMM yyyy').format(DateTime.now())).where("status", isEqualTo: "approved").where("cat", isEqualTo: "secretary" ).orderBy("votes", descending: true).snapshots(),
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         return Column(

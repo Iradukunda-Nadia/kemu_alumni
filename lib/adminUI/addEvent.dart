@@ -309,7 +309,7 @@ class _eventReservesState extends State<eventReserves> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text("Deleted"),
-                  content: Text("Stand deleted from database"),
+                  content: Text("event deleted from database"),
                   actions: <Widget>[
                     FlatButton(
                       child: Text("Close"),

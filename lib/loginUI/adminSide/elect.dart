@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Elect extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _ElectState extends State<Elect> {
         children: <Widget>[
           SizedBox(height: 20.0),
           StreamBuilder<QuerySnapshot>(
-              stream: db.collection('candidates').orderBy("cat").snapshots(),
+              stream: db.collection(DateFormat('MMM yyyy').format(DateTime.now())).orderBy("cat").snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Column(

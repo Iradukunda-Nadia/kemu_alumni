@@ -2,6 +2,7 @@
   "projects": {
     "default": "kemu-9af65",
     "staging": "kemu-9af65",
-    "dev": "kemu-9af65"
+    "dev": "kemu-9af65",
+    "dep": "kemu-9af65"
   }
 }

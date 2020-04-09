@@ -57,7 +57,7 @@ class _newEventsState extends State<newEvents> {
           .setData({
         "uid": user.uid,
         "email": user.email,
-        "status": "KeMU AA ccontribution",
+        "status": "Rsvp for $title,",
         "event": title,
         "amount": payment,
         "date" : DateFormat(' dd MMM yyyy').format(DateTime.now()),

@@ -8,6 +8,7 @@ class approvedUser extends StatefulWidget {
 }
 
 class _approvedUserState extends State<approvedUser> {
+  var reason = TextEditingController();
   final db = Firestore.instance;
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,8 @@ class _approvedUserState extends State<approvedUser> {
                             leading: CircleAvatar(
                               child: new Icon(Icons.person),
                             ),
-                            title: Text(doc.data['name'], style: TextStyle(fontSize: 12),),
+                            title: Text(doc.data['name'], style: TextStyle(fontSize: MediaQuery.of(context).orientation == Orientation.portrait ? 12 : 20),),
+                            subtitle: Text("Date Created: ${doc.data['date']}", style: TextStyle(fontSize: MediaQuery.of(context).orientation == Orientation.portrait ? 12 : 20),),
                             trailing: Container(
                               width: MediaQuery.of(context).orientation == Orientation.portrait ? 60 : 100,
                               height: MediaQuery.of(context).orientation == Orientation.portrait ? 20 : 40,
@@ -39,54 +41,56 @@ class _approvedUserState extends State<approvedUser> {
 
                                   ),
                                   color: Colors.pink[900],
-                                  onPressed: () async{
-
-                                    showDialog(
+                                onPressed: () {
+                                  showCupertinoDialog(
                                       context: context,
-                                      builder: (BuildContext context){
-                                        return AlertDialog(
-                                          title: Text("Suspend this user?"),
-                                          actions: <Widget>[
-                                            FlatButton(
-                                              child: Text("Yes"),
-                                              onPressed: () async{
-                                                await db
-                                                    .collection('users')
-                                                    .document(doc.documentID)
-                                                    .updateData({
-                                                  'status': "suspended",
-                                                });
-                                                Navigator.of(context).pop();
-                                                showDialog(
-                                                    context: context,
-                                                    builder: (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: Text("Suspended"),
-                                                        content: Text("This user has been suspended"),
-                                                        actions: <Widget>[
-                                                          FlatButton(
-                                                            child: Text("Close"),
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                          )
-                                                        ],
-                                                      );
-                                                    });
-                                              }, ),
-                                            FlatButton(
-                                              child: Text("No"),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            )
-                                          ],
+                                      builder: (BuildContext context) =>
+                                          CupertinoActionSheet(
+                                            title: Text(
+                                                "Enter a reason for suspending this user"),
+                                            message: Column(
+                                              children: <Widget>[
+                                                CupertinoTextField(
+                                                  controller: reason,
+                                                  placeholder: 'reason',
+                                                ),
 
-                                        );
-                                      },
+                                              ],
+                                            ),
+                                            actions: <Widget>[
+                                              CupertinoButton(
+                                                child: Text("Suspend"),
+                                                onPressed: () async {
+                                                  await db
+                                                      .collection('users')
+                                                      .document(doc.documentID)
+                                                      .updateData({
+                                                    'status': "suspended",
+                                                    'reason': reason.text,
+                                                  });
+                                                  Navigator.of(context).pop();
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext context) {
+                                                        return AlertDialog(
+                                                          title: Text("User Suspended"),
+                                                          content: Text("This user has been Suspended"),
+                                                          actions: <Widget>[
+                                                            FlatButton(
+                                                              child: Text("Close"),
+                                                              onPressed: () {
+                                                                Navigator.of(context).pop();
+                                                              },
+                                                            )
+                                                          ],
+                                                        );
+                                                      });
+                                                },
+                                              )
+                                            ],
+                                          ));
 
-                                    );
-                                  }),
+                                },),
                             )
 
                         ),

@@ -1,6 +1,14 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'package:image_picker/image_picker.dart'; // For Image Picker
+import 'package:kemu_alumni/tabs.dart';
+import 'package:path/path.dart' as Path;
 
 class Profile extends StatefulWidget {
   @override
@@ -13,7 +21,35 @@ class _ProfileState extends State<Profile> {
   String email;
   String reg;
   String img;
+  String id;
+  File _image;
+  String _uploadedFileURL;
 
+
+  Future chooseFile() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+      setState(() {
+        _image = image;
+      });
+    });
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('chats/${Path.basename(_image.path)}}');
+    StorageUploadTask upload = storageReference.putFile(_image,);
+    StorageTaskSnapshot taskSnapshot=await upload.onComplete;
+
+    String Imageurl = await taskSnapshot.ref.getDownloadURL();
+    await Firestore.instance
+        .collection('users')
+        .document(id)
+        .updateData({
+      'img': Imageurl,
+    });
+    print('File Uploaded');
+    Navigator.of(context).push(new CupertinoPageRoute(
+        builder: (BuildContext context) => new tabView()
+    ));
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -42,6 +78,7 @@ class _ProfileState extends State<Profile> {
             email = user.email;
             reg = document['reg'];
             img = document['img'];
+            id = document.documentID;
 
           });
 
@@ -63,18 +100,35 @@ class _ProfileState extends State<Profile> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              CircleAvatar(
-                radius: 70,
-                child: img == null ? new Icon(Icons.person, color: Colors.white, size: 50,):
-                Container(
-                    padding: EdgeInsets.only(left: 10.0),
-                    decoration: new BoxDecoration(
-                      image: new DecorationImage(
-                        image: new NetworkImage(img),
-                        fit: BoxFit.cover,
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: <Widget>[
+                  CircleAvatar(
+                    radius: 70,
+                    child: img == null ? new Icon(Icons.person, color: Colors.white, size: 50,):
+                    Container(
+                        padding: EdgeInsets.only(left: 10.0),
+                        decoration: new BoxDecoration(
+                          image: new DecorationImage(
+                            image: new NetworkImage(img),
+                            fit: BoxFit.cover,
+                          ),
+                          shape: BoxShape.circle,
+                        )),
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      chooseFile();
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      child: Icon(
+                        Icons.edit,
+                        color: Colors.teal[900],
                       ),
-                      shape: BoxShape.circle,
-                    )),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
                 height: 20.0,

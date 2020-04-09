@@ -31,6 +31,7 @@ class _appUsersState extends State<appUsers> {
                             child: new Icon(Icons.person),
                           ),
                           title: Text(doc.data['name'], style: TextStyle(fontSize: MediaQuery.of(context).orientation == Orientation.portrait ? 12 : 20),),
+                          subtitle: Text("Date Created: ${doc.data['date']}", style: TextStyle(fontSize: MediaQuery.of(context).orientation == Orientation.portrait ? 12 : 20),),
                           trailing: RaisedButton(
                               color: Colors.pink[900],
                               child: Text("Approve", style: TextStyle(color: Colors.white,fontSize: MediaQuery.of(context).orientation == Orientation.portrait ? 10 : 14)),
