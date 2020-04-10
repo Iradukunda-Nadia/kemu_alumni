@@ -32,9 +32,11 @@ dependencies:
   firebase_messaging: ^5.0.4
   intl: any
   url_launcher: ^5.4.2
+  url_launcher_web: ^0.1.0
   printing: any
   pdf: any
   file_picker: ^1.5.1
+  universal_html: ^1.1.18
 
 dev_dependencies:
   flutter_test:

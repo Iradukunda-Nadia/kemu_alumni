@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:universal_html/html.dart' as html;
+
 
 class candi extends StatefulWidget {
   @override
@@ -129,7 +131,7 @@ class _ActiveCandState extends State<ActiveCand> {
                             date: doc.data["date"],
                             name: doc.data["name"],
                             status: doc.data["status"],
-                            qualification: doc.data["status"],
+                            qualification: doc.data["req"],
                             docID: doc.documentID,
 
 
@@ -191,6 +193,10 @@ class _regDetailState extends State<regDetail> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+  void htmlOpenLink() {
+    String url = urlData;
+    html.window.open(url, '_blank');
   }
   
   @override
@@ -272,7 +278,8 @@ class _regDetailState extends State<regDetail> {
                             urlData = widget.cv;
                           });
 
-                          _launchURL();
+                          MediaQuery.of(context).orientation != Orientation.landscape  ? _launchURL():
+                          htmlOpenLink();
                         },
                           child: Text(
                             "CV Link",
