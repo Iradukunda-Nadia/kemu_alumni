@@ -34,7 +34,7 @@ class _AcademicsState extends State<Academics> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.white,
-        label: new Text('Feedback'),
+        label: new Text('Feedback', style: TextStyle(color: Colors.pink[900],),),
         //Widget to display inside Floating Action Button, can be `Text`, `Icon` or any widget.
         onPressed: () {
           Navigator.of(context).push(new CupertinoPageRoute(
