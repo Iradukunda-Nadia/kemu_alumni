@@ -80,6 +80,7 @@ class _addEventState extends State<addEvent> {
   String _date;
   String _img;
   String _dept;
+  String _amount;
   void _submitCommand() {
     //get state of our Form
     final form = formKey.currentState;
@@ -109,6 +110,7 @@ class _addEventState extends State<addEvent> {
         'date': _date,
         'image': _img,
         'status': "active",
+        'amount': _amount,
       });
     }).then((result) =>
 
@@ -168,6 +170,7 @@ class _addEventState extends State<addEvent> {
                             padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
                             child: Container(
                               child: TextFormField(
+
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontFamily: 'SFUIDisplay'
@@ -187,6 +190,8 @@ class _addEventState extends State<addEvent> {
                               ),
                             ),
                           ),
+
+
 
                           Padding(
                             padding: EdgeInsets.fromLTRB(20, 10, 20, 20),
@@ -229,6 +234,30 @@ class _addEventState extends State<addEvent> {
                                 validator: (val) =>
                                 val.isEmpty  ? null : null,
                                 onSaved: (val) => _img = val,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                            child: Container(
+                              child: TextFormField(
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'SFUIDisplay'
+                                ),
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                    errorStyle: TextStyle(color: Colors.red),
+                                    filled: true,
+                                    fillColor: Colors.white.withOpacity(0.1),
+                                    labelText: 'Amount',
+                                    labelStyle: TextStyle(
+                                        fontSize: 11
+                                    )
+                                ),
+                                validator: (val) =>
+                                val.isEmpty  ? null : null,
+                                onSaved: (val) => _amount = val,
                               ),
                             ),
                           ),
