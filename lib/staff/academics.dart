@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kemu_alumni/adminUI/addEvent.dart';
 import 'package:kemu_alumni/adminUI/addNews.dart';
+import 'package:kemu_alumni/adminUI/feedback.dart';
 import 'package:kemu_alumni/loginUI/adminSide/candidates.dart';
 import 'package:kemu_alumni/loginUI/adminSide/courses.dart';
 import 'package:kemu_alumni/loginUI/auth.dart';
@@ -30,6 +31,19 @@ class _AcademicsState extends State<Academics> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.pink[900],
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.white,
+        label: new Text('Feedback'),
+        //Widget to display inside Floating Action Button, can be `Text`, `Icon` or any widget.
+        onPressed: () {
+          Navigator.of(context).push(new CupertinoPageRoute(
+              builder: (BuildContext context) => new finFeedback(
+                name: "Academics",
+              )
+          ));
+        },
+      ),
 
       body: Column(
         children: <Widget>[

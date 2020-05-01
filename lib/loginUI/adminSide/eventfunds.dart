@@ -12,6 +12,7 @@ import 'dart:ui' as ui;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdf;
 import 'package:path_provider/path_provider.dart';
+import 'package:universal_html/html.dart' as html;
 
 class EventFundsDetail extends StatefulWidget {
   String eventTitle;
@@ -133,6 +134,13 @@ class _EventFundsDetailState extends State<EventFundsDetail> {
 
   }
 
+  void htmlOpenLink() {
+    String url = "https://restpack.io/html2pdf/save-as-pdf?private=true";
+    html.window.print();
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,43 +155,56 @@ class _EventFundsDetailState extends State<EventFundsDetail> {
         icon: Icon(Icons.attach_money),
         label: new Text('print report', style: TextStyle(fontSize: 20),),
         //Widget to display inside Floating Action Button, can be `Text`, `Icon` or any widget.
-        onPressed: () {_printScreen();},
+        onPressed: () {MediaQuery.of(context).orientation == Orientation.portrait ? _printScreen() : htmlOpenLink();},
       ),
       body: RepaintBoundary(
         key: _renderObjectKey,
-        child: StreamBuilder<QuerySnapshot>(
-            stream: collectionReference.orderBy("date", descending: true).where("event", isEqualTo: widget.eventTitle).snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView(
-                  children: snapshot.data.documents.map((doc) {
-                    return Column(
-                      children: <Widget>[
-                        new ListTile(
-                          leading: new CircleAvatar(
-                            child: new Icon(Icons.attach_money,
-                              color: Colors.white,
-                              size: 20.0,
+        child: Column(
+          mainAxisSize:MainAxisSize.min,
+          children: <Widget>[
+            Center(
+              child: new Text(
+                widget.eventTitle,
+                style: new TextStyle(
+                    fontSize: 18.0, fontWeight: FontWeight.w700),
+              ),
+            ),
+            StreamBuilder<QuerySnapshot>(
+                stream: collectionReference.orderBy("date", descending: true).where("event", isEqualTo: widget.eventTitle).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView(
+                      shrinkWrap: true,
+                      children: snapshot.data.documents.map((doc) {
+                        return Column(
+                          children: <Widget>[
+                            new ListTile(
+                              leading: new CircleAvatar(
+                                child: new Icon(Icons.attach_money,
+                                  color: Colors.white,
+                                  size: 20.0,
+                                ),
+                              ),
+                              title: new Text("KSH. ${doc.data["amount"]}"),
+                              subtitle: new Text("By: ${doc.data["email"]}.  \nDate: ${doc.data["date"]}."),
+                              isThreeLine: true,
+
+
                             ),
-                          ),
-                          title: new Text("KSH. ${doc.data["amount"]}"),
-                          subtitle: new Text("By: ${doc.data["email"]}.  \nDate: ${doc.data["date"]}."),
-                          isThreeLine: true,
+                            Divider(),
+                          ],
+                        );
 
 
-                        ),
-                        Divider(),
-                      ],
+
+                      }).toList(),
                     );
-
-
-
-                  }).toList(),
-                );
-              } else {
-                return SizedBox();
-              }
-            }),
+                  } else {
+                    return SizedBox();
+                  }
+                }),
+          ],
+        ),
       ),
     );
   }

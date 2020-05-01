@@ -42,6 +42,7 @@ class _EventsListState extends State<EventsList> {
                             itemImage: doc.data["image"],
                             eventTitle: doc.data["title"],
                             eventDate: doc.data["date"],
+                            status: doc.data["status"],
                             eventID: doc.documentID,
 
 
@@ -89,13 +90,15 @@ class _addEventState extends State<addEvent> {
       //`save()` Saves every FormField that is a descendant of this Form.
       form.save();
 
-      // Email & password matched our validation rules
-      // and are saved to _email and _password fields.
+      setState(() {
+        _date = dateCtl.text;
+      });
       _AddData();
     }
   }
 
   _AddData() async {
+
     final form = formKey.currentState;
 
     Firestore.instance.runTransaction((Transaction transaction) async {
@@ -103,8 +106,9 @@ class _addEventState extends State<addEvent> {
 
       await reference.add({
         'title': _name,
-        'date': dateCtl,
+        'date': _date,
         'image': _img,
+        'status': "active",
       });
     }).then((result) =>
 
@@ -273,6 +277,7 @@ class eventReserves extends StatefulWidget {
   String eventTitle;
   String eventDate;
   String eventID;
+  String status;
 
   eventReserves({
 
@@ -280,6 +285,7 @@ class eventReserves extends StatefulWidget {
     this.eventTitle,
     this.eventDate,
     this.eventID,
+    this.status,
   });
   @override
   _eventReservesState createState() => _eventReservesState();
@@ -294,22 +300,24 @@ class _eventReservesState extends State<eventReserves> {
         title: Text("RSVP's"),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: widget.status == 'archived' ? Offstage() :FloatingActionButton.extended(
         backgroundColor: Colors.pink[900],
-        label: new Text('Delete Event', style: TextStyle(fontSize: 20),),
+        label: new Text('Archive event?', style: TextStyle(fontSize: 20),),
         //Widget to display inside Floating Action Button, can be `Text`, `Icon` or any widget.
         onPressed: () async {
           await db
               .collection('events')
               .document(widget.eventID)
-              .delete();
+              .updateData({
+            'status': "archived",
+          });
           Navigator.of(context).pop();
           showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text("Deleted"),
-                  content: Text("event deleted from database"),
+                    title: Text("Archived"),
+                  content: Text("The event has been archived"),
                   actions: <Widget>[
                     FlatButton(
                       child: Text("Close"),

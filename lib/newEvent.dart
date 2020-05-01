@@ -13,7 +13,7 @@ class newEvents extends StatefulWidget {
 class _newEventsState extends State<newEvents> {
   Future getUsers() async{
     var firestore = Firestore.instance;
-    QuerySnapshot qn = await firestore.collection("events").getDocuments();
+    QuerySnapshot qn = await firestore.collection("events").where("status", isEqualTo: "active").getDocuments();
     return qn.documents;
 
   }
