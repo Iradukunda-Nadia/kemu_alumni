@@ -38,7 +38,7 @@ class _AcademicsState extends State<Academics> {
         //Widget to display inside Floating Action Button, can be `Text`, `Icon` or any widget.
         onPressed: () {
           Navigator.of(context).push(new CupertinoPageRoute(
-              builder: (BuildContext context) => new finFeedback(
+              builder: (BuildContext context) => new acFeedback(
                 name: "Academics",
               )
           ));
