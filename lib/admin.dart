@@ -89,6 +89,43 @@ class _DashboardState extends State<Dashboard> {
                     ),
                   ),
 
+                  Positioned(
+                    top: 40,
+                    left: 300,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Container(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            PopupMenuButton(
+                              icon: new Icon(Icons.person, color: Colors.white,),
+                              onSelected: (String value) {
+                                switch (value) {
+                                  case 'logout':
+                                    logout();
+                                    break;
+                                // Other cases for other menu options
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                PopupMenuItem<String>(
+                                  value: "logout",
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text("LOGOUT"),
+                                      Icon(Icons.exit_to_app, color: Colors.pink[900],),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
 
 
                 ],
