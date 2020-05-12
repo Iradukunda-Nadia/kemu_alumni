@@ -25,6 +25,28 @@ export const sendToDevice = functions.firestore
     return fcm.sendToDevice(tokens, payload);
   });
 
+export const sendRejection = functions.firestore
+  .document('rejections/{Item}')
+  .onCreate(async snapshot => {
+
+
+    const order: any = snapshot.data();
+
+    const tokens = order.token;
+    const reason = order.reason;
+    const textTitle = order.body;
+
+    const payload: admin.messaging.MessagingPayload = {
+      notification: {
+        title: textTitle,
+        body: reason
+
+      }
+    };
+
+    return fcm.sendToDevice(tokens, payload);
+  });
+
 export const newMessage = functions.firestore
   .document('messages/{Item}')
   .onCreate(async snapshot => {

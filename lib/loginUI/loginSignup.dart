@@ -35,6 +35,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   bool _isLoginForm;
   bool _isLoading;
+  bool _isReset;
 
   // Check if form is valid before perform login or signup
   bool validateAndSave() {
@@ -88,6 +89,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
     _errorMessage = "";
     _isLoading = false;
     _isLoginForm = true;
+    _isReset = false;
     super.initState();
     _messaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -159,6 +161,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       _isLoginForm = !_isLoginForm;
     });
   }
+
   var maskTextInputFormatter = MaskTextInputFormatter(mask: "AAA-#-####-#/yyyy", filter: { "#": RegExp(r'[0-9]'), "A": RegExp(r'[A-Za-z]'), "y": RegExp (r'[0-9]|[0-9][0-9]|[0-9][0-9][0-9]|1[0-9][0-9][0-9]|20[0-1][0-8]|201[0-8]') });
 
   help() async {
@@ -321,9 +324,10 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
                 ),
               ),
               showEmailInput(),
-              showPasswordInput(),
-              showPrimaryButton(),
-              showSecondaryButton(),
+              _isReset ? new Offstage():showPasswordInput(),
+              _isReset ? showResetButton():showPrimaryButton(),
+              _isReset ? backToLoginButton():showSecondaryButton(),
+              _isReset ? new Offstage():resetSec(),
               showErrorMessage(),
             ],
           ),
@@ -412,6 +416,31 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         onPressed: toggleFormMode);
   }
 
+  Widget backToLoginButton() {
+    return new FlatButton(
+        child: new Text(
+            'Back to login',
+            style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+        onPressed:(){
+          setState(() {
+            _isReset = false;
+            _isLoginForm = true;
+
+          });
+        });
+  }
+
+  Widget resetSec() {
+    return new FlatButton(
+        child: new Text('Forgot password? Reset here! ',
+            style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+        onPressed: (){
+          setState(() {
+            _isReset = true;
+          });
+        });
+  }
+
   Widget showPrimaryButton() {
     return new Padding(
         padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
@@ -425,6 +454,59 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
             child: new Text(_isLoginForm ? 'Login' : 'Create account',
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
             onPressed: validateAndSubmit,
+          ),
+        ));
+  }
+
+  Widget showResetButton() {
+    return new Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+        child: SizedBox(
+          height: 40.0,
+          child: new RaisedButton(
+            elevation: 5.0,
+            shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0)),
+            color: Colors.pink,
+            child: new Text('Reset password',
+                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+              onPressed: () async {
+
+                if (_formKey.currentState.validate()) {
+                  _formKey.currentState.save();
+                  try {
+                    await widget.auth
+                        .resetPassword(_email);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        // return object of type Dialog
+                        return AlertDialog(
+                          title: new Text("Reset Password"),
+                          content:
+                              new Text("Link to Reset Your password has been sent to your email"),
+                          actions: <Widget>[
+                            new FlatButton(
+                              child: new Text("Dismiss"),
+                              onPressed: () {
+                                setState(() {
+                                  _isReset = false;
+                                  _isLoginForm = true;
+
+                                });
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } catch (e) {
+                    print(e);
+                  }
+                }
+
+              },
           ),
         ));
   }

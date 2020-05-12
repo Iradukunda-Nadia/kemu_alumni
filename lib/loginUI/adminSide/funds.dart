@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+
 import 'package:flutter/rendering.dart';
 import 'package:printing/printing.dart';
 import 'dart:async';
@@ -166,7 +167,7 @@ class _FundsState extends State<Funds> {
               ),
             ),
             StreamBuilder<QuerySnapshot>(
-                stream: collectionReference.orderBy("date", descending: true).where("event", isEqualTo: "KeMU AA ccontribution").snapshots(),
+                stream: collectionReference.where("event", isEqualTo: "KeMU AA ccontribution").snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListView(

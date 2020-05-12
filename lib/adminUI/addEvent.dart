@@ -211,7 +211,7 @@ class _addEventState extends State<addEvent> {
                                       firstDate:DateTime(1900),
                                       lastDate: DateTime(2100));
 
-                                  dateCtl.text = DateFormat(' dd MMM yyyy').format(date);},),
+                                  dateCtl.text = DateFormat('dd MMM yyyy').format(date);},),
                             ),
                           ),
                           Padding(

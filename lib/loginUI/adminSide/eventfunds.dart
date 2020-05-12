@@ -170,7 +170,7 @@ class _EventFundsDetailState extends State<EventFundsDetail> {
               ),
             ),
             StreamBuilder<QuerySnapshot>(
-                stream: collectionReference.orderBy("date", descending: true).where("event", isEqualTo: widget.eventTitle).snapshots(),
+                stream: collectionReference.where("event", isEqualTo: widget.eventTitle).snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListView(

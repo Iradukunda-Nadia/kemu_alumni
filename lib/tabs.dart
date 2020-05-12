@@ -37,6 +37,7 @@ class _tabViewState extends State<tabView> with SingleTickerProviderStateMixin {
   String id;
   String _password;
   String state;
+  String reason;
   bool isLoggedIn = false;
 
   _voterCheck() async {
@@ -49,8 +50,34 @@ class _tabViewState extends State<tabView> with SingleTickerProviderStateMixin {
         async {
           setState(() {
             state = document['status'];
+            reason = document['reason'];
 
           });
+
+          if( state == "rejected" ) {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                // return object of type Dialog
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: AlertDialog(
+                    content: new Text("Your registration was rejected for this reason: \n ${reason} "),
+                    actions: <Widget>[
+                      // usually buttons at the bottom of the dialog
+                      new FlatButton(
+                        child: new Text("BACK"),
+                        onPressed: () {
+                          _signOut();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
 
 
           if( state == "suspended" ) {

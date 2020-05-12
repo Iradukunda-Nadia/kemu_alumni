@@ -9,6 +9,7 @@ class appUsers extends StatefulWidget {
 
 class _appUsersState extends State<appUsers> {
   final db = Firestore.instance;
+  var reason = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +79,59 @@ class _appUsersState extends State<appUsers> {
                                           FlatButton(
                                             child: Text("No"),
                                             onPressed: () {
-                                              Navigator.of(context).pop();
+                                              showCupertinoDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) =>
+                                                      CupertinoActionSheet(
+                                                        title: Text(
+                                                            "Enter a reason for Rejecting this user"),
+                                                        message: Column(
+                                                          children: <Widget>[
+                                                            CupertinoTextField(
+                                                              controller: reason,
+                                                              placeholder: 'reason',
+                                                            ),
+
+                                                          ],
+                                                        ),
+                                                        actions: <Widget>[
+                                                          CupertinoButton(
+                                                            child: Text("Reject"),
+                                                            onPressed: () async {
+                                                              await db
+                                                                  .collection('users')
+                                                                  .document(doc.documentID)
+                                                                  .updateData({
+                                                                'status': "rejected",
+                                                                'reason': reason.text,
+                                                              });
+                                                              Firestore.instance.collection('rejections').document(doc.data['token']).setData({
+                                                                'title': "Rejected!!",
+                                                                'body': "Your registration has been rejected",
+                                                                'token': doc.data['token'],
+                                                                'reason': reason.text,
+                                                              });
+                                                              Navigator.of(context).pop();
+                                                              showDialog(
+                                                                  context: context,
+                                                                  builder: (BuildContext context) {
+                                                                    return AlertDialog(
+                                                                      title: Text("User Rejected"),
+                                                                      content: Text("This user has been Rejected"),
+                                                                      actions: <Widget>[
+                                                                        FlatButton(
+                                                                          child: Text("Close"),
+                                                                          onPressed: () {
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                        )
+                                                                      ],
+                                                                    );
+                                                                  });
+                                                            },
+                                                          )
+                                                        ],
+                                                      ));
                                             },
                                           )
                                         ],
